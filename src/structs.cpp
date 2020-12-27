@@ -482,6 +482,37 @@ void ModelAnimationFramePosesSetter(ModelAnimation& modelAnimation, std::vector<
     }
 }
 #pragma endregion
+#pragma region VrDeviceInfo
+std::vector<float> VrDeviceInfoLensDistortionValuesGetter(const VrDeviceInfo& vrDeviceInfo) {
+    auto output = std::vector<float>();
+
+    output.push_back(vrDeviceInfo.lensDistortionValues[0]);
+    output.push_back(vrDeviceInfo.lensDistortionValues[1]);
+    output.push_back(vrDeviceInfo.lensDistortionValues[2]);
+    output.push_back(vrDeviceInfo.lensDistortionValues[3]);
+
+    return output;
+}
+
+void VrDeviceInfoLensDistortionValuesSetter(const VrDeviceInfo& vrDeviceInfo, std::vector<float> lensDistortionValues) {
+    return;
+}
+
+std::vector<float> VrDeviceInfoChromaAbCorrectionGetter(const VrDeviceInfo& vrDeviceInfo) {
+    auto output = std::vector<float>();
+
+    output.push_back(vrDeviceInfo.chromaAbCorrection[0]);
+    output.push_back(vrDeviceInfo.chromaAbCorrection[1]);
+    output.push_back(vrDeviceInfo.chromaAbCorrection[2]);
+    output.push_back(vrDeviceInfo.chromaAbCorrection[3]);
+
+    return output;
+}
+
+void VrDeviceInfoChromaAbCorrectionSetter(const VrDeviceInfo& vrDeviceInfo, std::vector<float> chromaAbCorrection) {
+    return;
+}
+#pragma endregion
 #pragma endregion
 
 EMSCRIPTEN_BINDINGS(raylibWebStructs) {
@@ -638,6 +669,19 @@ EMSCRIPTEN_BINDINGS(raylibWebStructs) {
         .field("distance", &RayHitInfo::distance)
         .field("position", &RayHitInfo::position)
         .field("normal", &RayHitInfo::normal);
+
+    emscripten::class_<VrDeviceInfo>("VRDeviceInfo")
+        .property("hResolution", &VrDeviceInfo::hResolution)
+        .property("vResolution", &VrDeviceInfo::vResolution)
+        .property("hScreenSize", &VrDeviceInfo::hScreenSize)
+        .property("vScreenSize", &VrDeviceInfo::vScreenSize)
+        .property("vScreenCenter", &VrDeviceInfo::vScreenCenter)
+        .property("eyeToScreenDistance", &VrDeviceInfo::eyeToScreenDistance)
+        .property("lensSeparationDistance", &VrDeviceInfo::lensSeparationDistance)
+        .property("interpupillaryDistance", &VrDeviceInfo::interpupillaryDistance)
+        .property("lensDistortionValues", &VrDeviceInfoLensDistortionValuesGetter, &VrDeviceInfoLensDistortionValuesSetter)
+        .property("chromaAbCorrection", &VrDeviceInfoChromaAbCorrectionGetter, &VrDeviceInfoChromaAbCorrectionSetter);
+
 
     emscripten::register_vector<int>("vector<int>");
     emscripten::register_vector<unsigned char>("vector<unsigned char>");
