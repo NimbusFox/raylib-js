@@ -6,7 +6,7 @@ ifdef ASSETS
 	A = --preload-file=$(ASSETS)@/ 
 endif
 
-FILES = database/FontDatabase.cpp database/ImageDatabase.cpp core.cpp structs.cpp shapes.cpp textures.cpp
+FILES = database/FontDatabase.cpp database/ImageDatabase.cpp core.cpp structs.cpp shapes.cpp textures.cpp text.cpp
 ARGS = $(A)--pre-js settings.js --no-entry -s USE_GLFW=3 --bind -I../raylib/src -I../include -L../raylib/src -lraylib
 
 debug:

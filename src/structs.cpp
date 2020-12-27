@@ -3,6 +3,7 @@
 #include "JSFont.h"
 #include "JSImage.h"
 #include "JSAnimImage.h"
+#include "JSCodepoint.h"
 
 // Bindings up to date with raylib 3.5
 // https://www.raylib.com/cheatsheet/cheatsheet.html
@@ -82,6 +83,10 @@ EMSCRIPTEN_BINDINGS(raylibWebStructs) {
         .field("image", &JSAnimImage::image)
         .field("frames", &JSAnimImage::frames);
 
+    emscripten::value_object<JSCodepoint>("JSCodepoint")
+        .field("result", &JSCodepoint::result)
+        .field("bytesProcessed", &JSCodepoint::bytesProcessed);
+
     emscripten::value_object<NPatchInfo>("NPatchInfo")
         .field("source", &NPatchInfo::source)
         .field("left", &NPatchInfo::left)
@@ -90,9 +95,13 @@ EMSCRIPTEN_BINDINGS(raylibWebStructs) {
         .field("bottom", &NPatchInfo::bottom)
         .field("type", &NPatchInfo::type);
     
+    emscripten::register_vector<int>("vector<int>");
     emscripten::register_vector<unsigned char>("vector<unsigned char>");
     emscripten::register_vector<Vector2>("vector<Vector2>");
     emscripten::register_vector<Vector3>("vector<Vector3>");
     emscripten::register_vector<Vector4>("vector<Vector4>");
     emscripten::register_vector<Color>("vector<Color>");
+    emscripten::register_vector<CharInfo>("vector<CharInfo>");
+    emscripten::register_vector<Rectangle>("vector<Rectangle>");
+    emscripten::register_vector<std::vector<Rectangle>>("vector<vector<Rectangel>>");
 }
