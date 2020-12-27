@@ -4,6 +4,6 @@
 typedef struct JSCodepoint {
     int result;
     int bytesProcessed;
-} JSCODEPOINT;
+} JSCodepoint;
 
 #endif

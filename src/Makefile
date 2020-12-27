@@ -6,13 +6,13 @@ ifdef ASSETS
 	A = --preload-file=$(ASSETS)@/ 
 endif
 
-FILES = database/FontDatabase.cpp database/ImageDatabase.cpp core.cpp structs.cpp shapes.cpp textures.cpp text.cpp
+FILES = core.cpp structs.cpp shapes.cpp textures.cpp text.cpp models.cpp
 ARGS = $(A)--pre-js settings.js --no-entry -s USE_GLFW=3 --bind -I../raylib/src -I../include -L../raylib/src -lraylib
 
 debug:
-	cd ../raylib/src && emmake make PLATFORM=PLATFORM_WEB
+	cd ../raylib/src && emmake make PLATFORM=PLATFORM_WEB RAYLIB_BUILD_MODE=DEBUG
 	mkdir -p ../bin
-	em++ --shell-file=../raylib/src/shell.html -o ../bin/raylib.html --source-map-base / --emit-symbol-map $(M)$(ARGS) $(FILES)
+	em++ -g4 --shell-file=../raylib/src/shell.html -o ../bin/raylib.html --source-map-base / --emit-symbol-map $(M)$(ARGS) $(FILES)
 
 release:
 	cd ../raylib/src && emmake make PLATFORM=PLATFORM_WEB

@@ -1,10 +1,10 @@
 #ifndef JSANIMIMAGE
 #define JSANIMIMAGE
 
-#include "JSImage.h"
+#include <raylib.h>
 
 typedef struct JSAnimImage {
-    JSImage image;
+    Image image;
     int frames;
 } JSAnimImage;
 #endif

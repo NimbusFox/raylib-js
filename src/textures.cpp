@@ -3,201 +3,174 @@
 #include <raylib.h>
 
 #include "JSAnimImage.h"
-#include "JSImage.h"
-#include "database/FontDatabase.h"
-#include "database/ImageDatabase.h"
 
 // Bindings up to date with raylib 3.5
 // https://www.raylib.com/cheatsheet/cheatsheet.html
 
-JSImage JSLoadImage(std::string fileName) {
-    return ImageDatabase::AddImage(LoadImage(fileName.c_str()));
+Image JSLoadImage(std::string fileName) {
+    return LoadImage(fileName.c_str());
 }
 
-JSImage JSLoadImageRaw(std::string fileName, int width, int height, int format, int headerSize) {
-    return ImageDatabase::AddImage(LoadImageRaw(fileName.c_str(), width, height, format, headerSize));
+Image JSLoadImageRaw(std::string fileName, int width, int height, int format, int headerSize) {
+    return LoadImageRaw(fileName.c_str(), width, height, format, headerSize);
 }
 
 JSAnimImage JSLoadImageAnim(std::string fileName) {
     auto val = JSAnimImage();
 
-    val.image = ImageDatabase::AddImage(LoadImageAnim(fileName.c_str(), &val.frames));
+    val.image = LoadImageAnim(fileName.c_str(), &val.frames);
 
     return val;
 }
 
-JSImage JSLoadImageFromMemory(std::string fileType, std::vector<unsigned char> fileData) {
-    return ImageDatabase::AddImage(LoadImageFromMemory(fileType.c_str(), fileData.data(), fileData.size()));
+Image JSLoadImageFromMemory(std::string fileType, std::vector<unsigned char> fileData) {
+    return LoadImageFromMemory(fileType.c_str(), fileData.data(), fileData.size());
 }
 
 void JSUnloadImage(Image image) {
     UnloadImage(image);
 }
 
-JSImage JSGenImageColor(int width, int height, Color color) {
-    return ImageDatabase::AddImage(GenImageColor(width, height, color));
+Image JSGenImageColor(int width, int height, Color color) {
+    return GenImageColor(width, height, color);
 }
 
-JSImage JSGenImageGradientV(int width, int height, Color top, Color bottom) {
-    return ImageDatabase::AddImage(GenImageGradientV(width, height, top, bottom));
+Image JSGenImageGradientV(int width, int height, Color top, Color bottom) {
+    return GenImageGradientV(width, height, top, bottom);
 }
 
-JSImage JSGenImageGradientH(int width, int height, Color left, Color right) {
-    return ImageDatabase::AddImage(GenImageGradientH(width, height, left, right));
+Image JSGenImageGradientH(int width, int height, Color left, Color right) {
+    return GenImageGradientH(width, height, left, right);
 }
 
-JSImage JSGenImageGradientRadial(int width, int height, float density, Color inner, Color outer) {
-    return ImageDatabase::AddImage(GenImageGradientRadial(width, height, density, inner, outer));
+Image JSGenImageGradientRadial(int width, int height, float density, Color inner, Color outer) {
+    return GenImageGradientRadial(width, height, density, inner, outer);
 }
 
-JSImage JSGenImageChecked(int width, int height, int checksX, int checksY, Color col1, Color col2) {
-    return ImageDatabase::AddImage(GenImageChecked(width, height, checksX, checksY, col1, col2));
+Image JSGenImageChecked(int width, int height, int checksX, int checksY, Color col1, Color col2) {
+    return GenImageChecked(width, height, checksX, checksY, col1, col2);
 }
 
-JSImage JSGenImageWhiteNoise(int width, int height, float factor) {
-    return ImageDatabase::AddImage(GenImageWhiteNoise(width, height, factor));
+Image JSGenImageWhiteNoise(int width, int height, float factor) {
+    return GenImageWhiteNoise(width, height, factor);
 }
 
-JSImage JSGenImagePerlinNoise(int width, int height, int offsetX, int offsetY, float scale) {
-    return ImageDatabase::AddImage(GenImagePerlinNoise(width, height, offsetX, offsetY, scale));
+Image JSGenImagePerlinNoise(int width, int height, int offsetX, int offsetY, float scale) {
+    return GenImagePerlinNoise(width, height, offsetX, offsetY, scale);
 }
 
-JSImage JSGenImageCellular(int width, int height, int tileSize) {
-    return ImageDatabase::AddImage(GenImageCellular(width, height, tileSize));
+Image JSGenImageCellular(int width, int height, int tileSize) {
+    return GenImageCellular(width, height, tileSize);
 }
 
-JSImage JSImageCopy(JSImage image) {
-    return ImageDatabase::AddImage(ImageCopy(*ImageDatabase::GetImage(image)));
+Image JSImageCopy(Image image) {
+    return ImageCopy(image);
 }
 
-JSImage JSImageFromImage(JSImage image, Rectangle rec) {
-    return ImageDatabase::AddImage(ImageFromImage(*ImageDatabase::GetImage(image), rec));
+Image JSImageFromImage(Image image, Rectangle rec) {
+    return ImageFromImage(image, rec);
 }
 
-JSImage JSImageText(std::string text, int fontSize, Color color) {
-    return ImageDatabase::AddImage(ImageText(text.c_str(), fontSize, color));
+Image JSImageText(std::string text, int fontSize, Color color) {
+    return ImageText(text.c_str(), fontSize, color);
 }
 
-JSImage JSImageTextEx(JSFont font, std::string text, float fontSize, float spacing, Color tint) {
-    return ImageDatabase::AddImage(ImageTextEx(FontDatabase::GetFont(font), text.c_str(), fontSize, spacing, tint));
+Image JSImageTextEx(Font font, std::string text, float fontSize, float spacing, Color tint) {
+    return ImageTextEx(font, text.c_str(), fontSize, spacing, tint);
 }
 
-JSImage JSImageFormat(JSImage image, int newFormat) {
-    ImageFormat(ImageDatabase::GetImage(image), newFormat);
-
-    image.format = newFormat;
-
-    return image;
+void JSImageFormat(Image* image, int newFormat) {
+    ImageFormat(image, newFormat);
 }
 
-void JSImageToPOT(JSImage image, Color fill) {
-    ImageToPOT(ImageDatabase::GetImage(image), fill);
+void JSImageToPOT(Image* image, Color fill) {
+    ImageToPOT(image, fill);
 }
 
-JSImage JSImageCrop(JSImage image, Rectangle crop) {
-    ImageCrop(ImageDatabase::GetImage(image), crop);
-
-    image.height = crop.height - crop.y;
-    image.width = crop.width - crop.x;
-
-    return image;
+void JSImageCrop(Image* image, Rectangle crop) {
+    ImageCrop(image, crop);
 }
 
-void JSImageAlphaCrop(JSImage image, float threshold) {
-    ImageAlphaCrop(ImageDatabase::GetImage(image), threshold);
+void JSImageAlphaCrop(Image* image, float threshold) {
+    ImageAlphaCrop(image, threshold);
 }
 
-void JSImageAlphaClear(JSImage image, Color color, float threshold) {
-    ImageAlphaClear(ImageDatabase::GetImage(image), color, threshold);
+void JSImageAlphaClear(Image* image, Color color, float threshold) {
+    ImageAlphaClear(image, color, threshold);
 }
 
-void JSImageAlphaMask(JSImage image, JSImage alphaMask) {
-    ImageAlphaMask(ImageDatabase::GetImage(image), *ImageDatabase::GetImage(alphaMask));
+void JSImageAlphaMask(Image* image, Image alphaMask) {
+    ImageAlphaMask(image, alphaMask);
 }
 
-void JSImageAlphaPremultiply(JSImage image) {
-    ImageAlphaPremultiply(ImageDatabase::GetImage(image));
+void JSImageAlphaPremultiply(Image* image) {
+    ImageAlphaPremultiply(image);
 }
 
-JSImage JSImageResize(JSImage image, int newWidth, int newHeight) {
-    ImageResize(ImageDatabase::GetImage(image), newWidth, newHeight);
-
-    image.width = newWidth;
-    image.height = newHeight;
-
-    return image;
+void JSImageResize(Image* image, int newWidth, int newHeight) {
+    ImageResize(image, newWidth, newHeight);
 }
 
-JSImage JSImageResizeNN(JSImage image, int newWidth, int newHeight) {
-    ImageResizeNN(ImageDatabase::GetImage(image), newWidth, newHeight);
-
-    image.width = newWidth;
-    image.height = newHeight;
-
-    return image;
+void JSImageResizeNN(Image* image, int newWidth, int newHeight) {
+    ImageResizeNN(image, newWidth, newHeight);
 }
 
-JSImage JSImageResizeCanvas(JSImage image, int newWidth, int newHeight, int offsetX, int offsetY, Color fill) {
-    ImageResizeCanvas(ImageDatabase::GetImage(image), newWidth, newHeight, offsetX, offsetY, fill);
-
-    image.width = newWidth;
-    image.height = newHeight;
-
-    return image;
+void JSImageResizeCanvas(Image* image, int newWidth, int newHeight, int offsetX, int offsetY, Color fill) {
+    ImageResizeCanvas(image, newWidth, newHeight, offsetX, offsetY, fill);
 }
 
-void JSImageMipmaps(JSImage image) {
-    ImageMipmaps(ImageDatabase::GetImage(image));
+void JSImageMipmaps(Image* image) {
+    ImageMipmaps(image);
 }
 
-void JSImageDither(JSImage image, int rBpp, int gBpp, int bBpp, int aBpp) {
-    ImageDither(ImageDatabase::GetImage(image), rBpp, gBpp, bBpp, aBpp);
+void JSImageDither(Image* image, int rBpp, int gBpp, int bBpp, int aBpp) {
+    ImageDither(image, rBpp, gBpp, bBpp, aBpp);
 }
 
-void JSImageFlipVertical(JSImage image) {
-    ImageFlipVertical(ImageDatabase::GetImage(image));
+void JSImageFlipVertical(Image* image) {
+    ImageFlipVertical(image);
 }
 
-void JSImageFlipHorizontal(JSImage image) {
-    ImageFlipHorizontal(ImageDatabase::GetImage(image));
+void JSImageFlipHorizontal(Image* image) {
+    ImageFlipHorizontal(image);
 }
 
-void JSImageRotateCW(JSImage image) {
-    ImageRotateCW(ImageDatabase::GetImage(image));
+void JSImageRotateCW(Image* image) {
+    ImageRotateCW(image);
 }
 
-void JSImageRotateCCW(JSImage image) {
-    ImageRotateCCW(ImageDatabase::GetImage(image));
+void JSImageRotateCCW(Image* image) {
+    ImageRotateCCW(image);
 }
 
-void JSImageColorTint(JSImage image, Color color) {
-    ImageColorTint(ImageDatabase::GetImage(image), color);
+void JSImageColorTint(Image* image, Color color) {
+    ImageColorTint(image, color);
 }
 
-void JSImageColorInvert(JSImage image) {
-    ImageColorInvert(ImageDatabase::GetImage(image));
+void JSImageColorInvert(Image* image) {
+    ImageColorInvert(image);
 }
 
-void JSImageColorGrayscale(JSImage image) {
-    ImageColorGrayscale(ImageDatabase::GetImage(image));
+void JSImageColorGrayscale(Image* image) {
+    ImageColorGrayscale(image);
 }
 
-void JSImageColorContrast(JSImage image, float contrast) {
-    ImageColorContrast(ImageDatabase::GetImage(image), contrast);
+void JSImageColorContrast(Image* image, float contrast) {
+    ImageColorContrast(image, contrast);
 }
 
-void JSImageColorBrightness(JSImage image, int brightness) {
-    ImageColorBrightness(ImageDatabase::GetImage(image), brightness);
+void JSImageColorBrightness(Image* image, int brightness) {
+    ImageColorBrightness(image, brightness);
 }
 
-void JSImageColorReplace(JSImage image, Color color, Color replace) {
-    ImageColorReplace(ImageDatabase::GetImage(image), color, replace);
+void JSImageColorReplace(Image* image, Color color, Color replace) {
+    ImageColorReplace(image, color, replace);
 }
 
-std::vector<Color> JSLoadImagePalette(JSImage image, int maxPaletteSize) {
+std::vector<Color> JSLoadImagePalette(Image image, int maxPaletteSize) {
     auto count = 0;
 
-    auto colors = LoadImagePalette(*ImageDatabase::GetImage(image), maxPaletteSize, &count);
+    auto colors = LoadImagePalette(image, maxPaletteSize, &count);
 
     auto output = std::vector<Color>();
 
@@ -208,76 +181,76 @@ std::vector<Color> JSLoadImagePalette(JSImage image, int maxPaletteSize) {
     return output;
 }
 
-Rectangle JSGetImageAlphaBorder(JSImage image, float threshold) {
-    return GetImageAlphaBorder(*ImageDatabase::GetImage(image), threshold);
+Rectangle JSGetImageAlphaBorder(Image image, float threshold) {
+    return GetImageAlphaBorder(image, threshold);
 }
 
-void JSImageClearBackground(JSImage dst, Color color) {
-    ImageClearBackground(ImageDatabase::GetImage(dst), color);
+void JSImageClearBackground(Image* dst, Color color) {
+    ImageClearBackground(dst, color);
 }
 
-void JSImageDrawPixel(JSImage dst, int posX, int posY, Color color) {
-    ImageDrawPixel(ImageDatabase::GetImage(dst), posX, posY, color);
+void JSImageDrawPixel(Image* dst, int posX, int posY, Color color) {
+    ImageDrawPixel(dst, posX, posY, color);
 }
 
-void JSImageDrawPixelV(JSImage dst, Vector2 position, Color color) {
-    ImageDrawPixelV(ImageDatabase::GetImage(dst), position, color);
+void JSImageDrawPixelV(Image* dst, Vector2 position, Color color) {
+    ImageDrawPixelV(dst, position, color);
 }
 
-void JSImageDrawLine(JSImage dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color) {
-    ImageDrawLine(ImageDatabase::GetImage(dst), startPosX, startPosY, endPosX, endPosY, color);
+void JSImageDrawLine(Image* dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color) {
+    ImageDrawLine(dst, startPosX, startPosY, endPosX, endPosY, color);
 }
 
-void JSImageDrawLineV(JSImage dst, Vector2 start, Vector2 end, Color color) {
-    ImageDrawLineV(ImageDatabase::GetImage(dst), start, end, color);
+void JSImageDrawLineV(Image* dst, Vector2 start, Vector2 end, Color color) {
+    ImageDrawLineV(dst, start, end, color);
 }
 
-void JSImageDrawCircle(JSImage dst, int centerX, int centerY, int radius, Color color) {
-    ImageDrawCircle(ImageDatabase::GetImage(dst), centerX, centerY, radius, color);
+void JSImageDrawCircle(Image* dst, int centerX, int centerY, int radius, Color color) {
+    ImageDrawCircle(dst, centerX, centerY, radius, color);
 }
 
-void JSImageDrawCircleV(JSImage dst, Vector2 center, int radius, Color color) {
-    ImageDrawCircleV(ImageDatabase::GetImage(dst), center, radius, color);
+void JSImageDrawCircleV(Image* dst, Vector2 center, int radius, Color color) {
+    ImageDrawCircleV(dst, center, radius, color);
 }
 
-void JSImageDrawRectangle(JSImage dst, int posX, int posY, int width, int height, Color color) {
-    ImageDrawRectangle(ImageDatabase::GetImage(dst), posX, posY, width, height, color);
+void JSImageDrawRectangle(Image* dst, int posX, int posY, int width, int height, Color color) {
+    ImageDrawRectangle(dst, posX, posY, width, height, color);
 }
 
-void JSImageDrawRectangleV(JSImage dst, Vector2 position, Vector2 size, Color color) {
-    ImageDrawRectangleV(ImageDatabase::GetImage(dst), position, size, color);
+void JSImageDrawRectangleV(Image* dst, Vector2 position, Vector2 size, Color color) {
+    ImageDrawRectangleV(dst, position, size, color);
 }
 
-void JSImageDrawRectangleRec(JSImage dst, Rectangle rec, Color color) {
-    ImageDrawRectangleRec(ImageDatabase::GetImage(dst), rec, color);
+void JSImageDrawRectangleRec(Image* dst, Rectangle rec, Color color) {
+    ImageDrawRectangleRec(dst, rec, color);
 }
 
-void JSImageDrawRectangleLines(JSImage dst, Rectangle rec, int thick, Color color) {
-    ImageDrawRectangleLines(ImageDatabase::GetImage(dst), rec, thick, color);
+void JSImageDrawRectangleLines(Image* dst, Rectangle rec, int thick, Color color) {
+    ImageDrawRectangleLines(dst, rec, thick, color);
 }
 
-void JSImageDraw(JSImage dst, JSImage src, Rectangle srcRec, Rectangle dstRec, Color tint) {
-    ImageDraw(ImageDatabase::GetImage(dst), *ImageDatabase::GetImage(src), srcRec, dstRec, tint);
+void JSImageDraw(Image* dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint) {
+    ImageDraw(dst, src, srcRec, dstRec, tint);
 }
 
-void JSImageDrawText(JSImage dst, std::string text, int posX, int posY, int fontSize, Color color) {
-    ImageDrawText(ImageDatabase::GetImage(dst), text.c_str(), posX, posY, fontSize, color);
+void JSImageDrawText(Image* dst, std::string text, int posX, int posY, int fontSize, Color color) {
+    ImageDrawText(dst, text.c_str(), posX, posY, fontSize, color);
 }
 
-void JSImageDrawTextEx(JSImage dst, JSFont font, std::string text, Vector2 position, float fontSize, float spacing, Color tint) {
-    ImageDrawTextEx(ImageDatabase::GetImage(dst), FontDatabase::GetFont(font), text.c_str(), position, fontSize, spacing, tint);
+void JSImageDrawTextEx(Image* dst, Font font, std::string text, Vector2 position, float fontSize, float spacing, Color tint) {
+    ImageDrawTextEx(dst, font, text.c_str(), position, fontSize, spacing, tint);
 }
 
 Texture2D JSLoadTexture(std::string fileName) {
     return LoadTexture(fileName.c_str());
 }
 
-Texture2D JSLoadTextureFromImage(JSImage image) {
-    return LoadTextureFromImage(*ImageDatabase::GetImage(image));
+Texture2D JSLoadTextureFromImage(Image image) {
+    return LoadTextureFromImage(image);
 }
 
-TextureCubemap JSLoadTextureCubemap(JSImage image, int layoutType) {
-    return LoadTextureCubemap(*ImageDatabase::GetImage(image), layoutType);
+TextureCubemap JSLoadTextureCubemap(Image image, int layoutType) {
+    return LoadTextureCubemap(image, layoutType);
 }
 
 RenderTexture2D JSLoadRenderTexture(int width, int height) {
@@ -300,12 +273,12 @@ void JSUpdateTextureRec(Texture2D texture, Rectangle rec, std::vector<Color> pix
     UpdateTextureRec(texture, rec, pixels.data());
 }
 
-JSImage JSGetTextureData(Texture2D texture) {
-    return ImageDatabase::AddImage(GetTextureData(texture));
+Image JSGetTextureData(Texture2D texture) {
+    return GetTextureData(texture);
 }
 
-JSImage JSGetScreenData(void) {
-    return ImageDatabase::AddImage(GetScreenData());
+Image JSGetScreenData(void) {
+    return GetScreenData();
 }
 
 Texture2D JSGenTextureMipmaps(Texture2D texture) {
@@ -412,32 +385,32 @@ EMSCRIPTEN_BINDINGS(raylibWebTextures) {
     emscripten::function("GenImageCellular", &JSGenImageCellular);
 
     // Image manipulation functions
-    emscripten::function("ImageCopy", &JSImageCopy);
-    emscripten::function("ImageFromImage", &JSImageFromImage);
+    emscripten::function("ImageCopy", &ImageCopy);
+    emscripten::function("ImageFromImage", &ImageFromImage);
     emscripten::function("ImageText", &JSImageText);
     emscripten::function("ImageTextEx", &JSImageTextEx);
-    emscripten::function("ImageFormat", &JSImageFormat);
-    emscripten::function("ImageToPOT", &JSImageToPOT);
-    emscripten::function("ImageCrop", &JSImageCrop);
-    emscripten::function("ImageAlphaCrop", &JSImageAlphaCrop);
-    emscripten::function("ImageAlphaClear", &JSImageAlphaClear);
-    emscripten::function("ImageAlphaMask", &JSImageAlphaMask);
-    emscripten::function("ImageAlphaPremultiply", &JSImageAlphaPremultiply);
-    emscripten::function("ImageResize", &JSImageResize);
-    emscripten::function("ImageResizeNN", &JSImageResizeNN);
-    emscripten::function("ImageResizeCanvas", &JSImageResizeCanvas);
-    emscripten::function("ImageMipmaps", &JSImageMipmaps);
-    emscripten::function("ImageDither", &JSImageDither);
-    emscripten::function("ImageFlipVertical", &JSImageFlipVertical);
-    emscripten::function("ImageFlipHorizontal", &JSImageFlipHorizontal);
-    emscripten::function("ImageRotateCW", &JSImageRotateCW);
-    emscripten::function("ImageRotateCCW", &JSImageRotateCCW);
-    emscripten::function("ImageColorTint", &JSImageColorTint);
-    emscripten::function("ImageColorInvert", &JSImageColorInvert);
-    emscripten::function("ImageColorGrayscale", &JSImageColorGrayscale);
-    emscripten::function("ImageColorContrast", &JSImageColorContrast);
-    emscripten::function("ImageColorBrightness", &JSImageColorBrightness);
-    emscripten::function("ImageColorReplace", &JSImageColorReplace);
+    emscripten::function("ImageFormat", &JSImageFormat, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageToPOT", &JSImageToPOT, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageCrop", &JSImageCrop, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageAlphaCrop", &JSImageAlphaCrop, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageAlphaClear", &JSImageAlphaClear, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageAlphaMask", &JSImageAlphaMask, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageAlphaPremultiply", &JSImageAlphaPremultiply, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageResize", &JSImageResize, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageResizeNN", &JSImageResizeNN, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageResizeCanvas", &JSImageResizeCanvas, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageMipmaps", &JSImageMipmaps, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDither", &JSImageDither, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageFlipVertical", &JSImageFlipVertical, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageFlipHorizontal", &JSImageFlipHorizontal, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageRotateCW", &JSImageRotateCW, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageRotateCCW", &JSImageRotateCCW, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageColorTint", &JSImageColorTint, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageColorInvert", &JSImageColorInvert, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageColorGrayscale", &JSImageColorGrayscale, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageColorContrast", &JSImageColorContrast, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageColorBrightness", &JSImageColorBrightness, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageColorReplace", &JSImageColorReplace, emscripten::allow_raw_pointer<Image>());
     //emscripten::function("LoadImageColors", &LoadImageColors);
     emscripten::function("LoadImagePalette", &JSLoadImagePalette);
     //emscripten::function("UnloadImageColors", &UnloadImageColors);
@@ -446,20 +419,20 @@ EMSCRIPTEN_BINDINGS(raylibWebTextures) {
 
     // Image drawing functions
     // NOTE: Image software-rendering functions (CPU)
-    emscripten::function("ImageClearBackground", &JSImageClearBackground);
-    emscripten::function("ImageDrawPixel", &JSImageDrawPixel);
-    emscripten::function("ImageDrawPixelV", &JSImageDrawPixelV);
-    emscripten::function("ImageDrawLine", &JSImageDrawLine);
-    emscripten::function("ImageDrawLineV", &JSImageDrawLineV);
-    emscripten::function("ImageDrawCircle", &JSImageDrawCircle);
-    emscripten::function("ImageDrawCircleV", &JSImageDrawCircleV);
-    emscripten::function("ImageDrawRectangle", &JSImageDrawRectangle);
-    emscripten::function("ImageDrawRectangleV", &JSImageDrawRectangleV);
-    emscripten::function("ImageDrawRectangleRec", &JSImageDrawRectangleRec);
-    emscripten::function("ImageDrawRectangleLines", &JSImageDrawRectangleLines);
-    emscripten::function("ImageDraw", &JSImageDraw);
-    emscripten::function("ImageDrawText", &JSImageDrawText);
-    emscripten::function("ImageDrawTextEx", &JSImageDrawTextEx);
+    emscripten::function("ImageClearBackground", &ImageClearBackground, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawPixel", &ImageDrawPixel, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawPixelV", &ImageDrawPixelV, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawLine", &ImageDrawLine, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawLineV", &ImageDrawLineV, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawCircle", &ImageDrawCircle, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawCircleV", &ImageDrawCircleV, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawRectangle", &ImageDrawRectangle, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawRectangleV", &ImageDrawRectangleV, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawRectangleRec", &ImageDrawRectangleRec, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawRectangleLines", &ImageDrawRectangleLines, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDraw", &ImageDraw, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawText", &ImageDrawText, emscripten::allow_raw_pointer<Image>());
+    emscripten::function("ImageDrawTextEx", &ImageDrawTextEx, emscripten::allow_raw_pointer<Image>());
 
     // Texture loading functions
     // NOTE: These functions require GPU access

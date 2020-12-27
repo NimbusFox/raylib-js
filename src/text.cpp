@@ -3,74 +3,64 @@
 #include <raylib.h>
 
 #include "JSCodepoint.h"
-#include "database/FontDatabase.h"
-#include "database/ImageDatabase.h"
 
 // Bindings up to date with raylib 3.5
 // https://www.raylib.com/cheatsheet/cheatsheet.html
 
-JSFont DefaulFont;
-bool FetchedDefaultFont = false;
-
-JSFont JSGetFontDefault() {
-    if (!FetchedDefaultFont) {
-        DefaulFont = FontDatabase::AddFont(GetFontDefault());
-        FetchedDefaultFont = true;
-    }
-
-    return DefaulFont;
+Font JSGetFontDefault() {
+    return GetFontDefault();
 }
 
-JSFont JSLoadFont(std::string fileName) {
-    return FontDatabase::AddFont(LoadFont(fileName.c_str()));
+Font JSLoadFont(std::string fileName) {
+    return LoadFont(fileName.c_str());
 }
 
-JSFont JSFontLoadEx(std::string fileName, int fontSize, std::vector<int> fontChars) {
-    return FontDatabase::AddFont(LoadFontEx(fileName.c_str(), fontSize, fontChars.data(), fontChars.size()));
+Font FontLoadEx(std::string fileName, int fontSize, std::vector<int> fontChars) {
+    return LoadFontEx(fileName.c_str(), fontSize, fontChars.data(), fontChars.size());
 }
 
-JSFont JSLoadFontFromImage(JSImage image, Color key, int firstChar) {
-    return FontDatabase::AddFont(LoadFontFromImage(*ImageDatabase::GetImage(image), key, firstChar));
+Font JSLoadFontFromImage(Image image, Color key, int firstChar) {
+    return LoadFontFromImage(image, key, firstChar);
 }
 
-JSFont JSLoadFontFromMemory(std::string fileType, std::vector<unsigned char> fileData, int fontSize, std::vector<int> fontChars) {
-    return FontDatabase::AddFont(LoadFontFromMemory(fileType.c_str(), fileData.data(), fileData.size(), fontSize, fontChars.data(), fontChars.size()));
+Font JSLoadFontFromMemory(std::string fileType, std::vector<unsigned char> fileData, int fontSize, std::vector<int> fontChars) {
+    return LoadFontFromMemory(fileType.c_str(), fileData.data(), fileData.size(), fontSize, fontChars.data(), fontChars.size());
 }
 
-void JSUnloadFont(JSFont font) {
-    FontDatabase::RemoveFont(font);
+void JSUnloadFont(Font font) {
+    UnloadFont(font);
 }
 
 void JSDrawText(std::string text, int posX, int posY, int fontSize, Color color) {
     DrawText(text.c_str(), posX, posY, fontSize, color);
 }
 
-void JSDrawTextEx(JSFont font, std::string text, Vector2 position, float fontSize, float spacing, Color tint) {
-    DrawTextEx(FontDatabase::GetFont(font), text.c_str(), position, fontSize, spacing, tint);
+void JSDrawTextEx(Font font, std::string text, Vector2 position, float fontSize, float spacing, Color tint) {
+    DrawTextEx(font, text.c_str(), position, fontSize, spacing, tint);
 }
 
-void JSDrawTextRec(JSFont font, std::string text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint) {
-    DrawTextRec(FontDatabase::GetFont(font), text.c_str(), rec, fontSize, spacing, wordWrap, tint);
+void JSDrawTextRec(Font font, std::string text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint) {
+    DrawTextRec(font, text.c_str(), rec, fontSize, spacing, wordWrap, tint);
 }
 
-void JSDrawTextRecEx(JSFont font, std::string text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint, int selectStart, int selectLength, Color selectTint, Color selectBackTint) {
-    DrawTextRecEx(FontDatabase::GetFont(font), text.c_str(), rec, fontSize, spacing, wordWrap, tint, selectStart, selectLength, selectTint, selectBackTint);
+void JSDrawTextRecEx(Font font, std::string text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint, int selectStart, int selectLength, Color selectTint, Color selectBackTint) {
+    DrawTextRecEx(font, text.c_str(), rec, fontSize, spacing, wordWrap, tint, selectStart, selectLength, selectTint, selectBackTint);
 }
 
-void JSDrawTextCodepoint(JSFont font, int codepoint, Vector2 position, float fontSize, Color tint) {
-    DrawTextCodepoint(FontDatabase::GetFont(font), codepoint, position, fontSize, tint);
+void JSDrawTextCodepoint(Font font, int codepoint, Vector2 position, float fontSize, Color tint) {
+    DrawTextCodepoint(font, codepoint, position, fontSize, tint);
 }
 
 int JSMeasureText(std::string text, int fontSize) {
     return MeasureText(text.c_str(), fontSize);
 }
 
-Vector2 JSMeasureTextEx(JSFont font, std::string text, float fontSize, float spacing) {
-    return MeasureTextEx(FontDatabase::GetFont(font), text.c_str(), fontSize, spacing);
+Vector2 JSMeasureTextEx(Font font, std::string text, float fontSize, float spacing) {
+    return MeasureTextEx(font, text.c_str(), fontSize, spacing);
 }
 
-int JSGetGlyphIndex(JSFont font, int codepoint) {
-    return GetGlyphIndex(FontDatabase::GetFont(font), codepoint);
+int JSGetGlyphIndex(Font font, int codepoint) {
+    return GetGlyphIndex(font, codepoint);
 }
 
 int JSTextToInteger(std::string text) {
@@ -115,7 +105,7 @@ EMSCRIPTEN_BINDINGS(raylibWebText) {
     // Font loading/unloading functions
     emscripten::function("GetFontDefault", &JSGetFontDefault);
     emscripten::function("LoadFont", &JSLoadFont);
-    emscripten::function("LoadFontEx", &JSFontLoadEx);
+    emscripten::function("LoadFontEx", &FontLoadEx);
     emscripten::function("LoadFontFromImage", &JSLoadFontFromImage);
     emscripten::function("LoadFontFromMemory", &JSLoadFontFromMemory);
     //emscripten::function("LoadFontData", &LoadFontData);
