@@ -8,7 +8,7 @@ let position = { x: 0.0, y: 0.0, z: 0.0 };
 let current = 0;
 
 Module.onRuntimeInitialized = function () {
-    Module.InitWindow(800, 450);
+    Module.InitWindow(1920, 1080);
 
     let checked = Module.GenImageChecked(2, 2, 1, 1, { r: 255, g: 0, b: 0, a: 255 }, { r: 0, g: 255, b: 0, a: 255 });
 
@@ -21,14 +21,13 @@ Module.onRuntimeInitialized = function () {
     models.push(Module.LoadModelFromMesh(Module.GenMeshSphere(2, 32, 32)));
     models.push(Module.LoadModelFromMesh(Module.GenMeshHemiSphere(2, 16, 16)));
     models.push(Module.LoadModelFromMesh(Module.GenMeshCylinder(1, 2, 16)));
-    // models.push(Module.LoadModelFromMesh(Module.GenMeshTorus(0.25, 4.0, 16, 32)));
-    // models.push(Module.LoadModelFromMesh(Module.GenMeshKnot(1.0, 2.0, 16, 128)));
-    // models.push(Module.LoadModelFromMesh(Module.GenMeshPoly(5, 2.0)));
+    models.push(Module.LoadModelFromMesh(Module.GenMeshTorus(0.25, 4.0, 16, 32)));
+    models.push(Module.LoadModelFromMesh(Module.GenMeshKnot(1.0, 2.0, 16, 128)));
+    models.push(Module.LoadModelFromMesh(Module.GenMeshPoly(5, 2.0)));
 
     for (let i = 0; i < models.length; i++)  {
-        models[i].materials[0].maps[0].texture = texture;
+        Module.SetModelTexture(models[i], 0, 0, texture);
     }
-
 
     Module.SetCameraMode(camera, 2);
 

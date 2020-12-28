@@ -2,6 +2,8 @@
 #include <emscripten/emscripten.h>
 #include <raylib.h>
 
+#include "cache/ModelCacheDatabase.h"
+
 // Bindings up to date with raylib 3.5
 // https://www.raylib.com/cheatsheet/cheatsheet.html
 
@@ -80,12 +82,12 @@ void JSDrawGizmo(Vector3 position) {
     DrawGizmo(position);
 }
 
-Model JSLoadModel(std::string fileName) {
-    return LoadModel(fileName.c_str());
+unsigned int JSLoadModel(std::string fileName) {
+    return ModelCacheDatabase::AddModel(LoadModel(fileName.c_str()));
 }
 
-Model JSLoadModelFromMesh(Mesh mesh) {
-    return LoadModelFromMesh(mesh);
+unsigned int JSLoadModelFromMesh(Mesh mesh) {
+    return ModelCacheDatabase::AddModel(LoadModelFromMesh(mesh));
 }
 
 void JSUnloadModel(Model model) {
@@ -226,20 +228,20 @@ void JSMeshNormalsSmooth(Mesh *mesh) {
     MeshNormalsSmooth(mesh);
 }
 
-void JSDrawModel(Model model, Vector3 position, float scale, Color tint) {
-    DrawModel(model, position, scale, tint);
+void JSDrawModel(unsigned int model, Vector3 position, float scale, Color tint) {
+    DrawModel(*ModelCacheDatabase::GetModel(model), position, scale, tint);
 }
 
-void JSDrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) {
-    DrawModelEx(model, position, rotationAxis, rotationAngle, scale, tint);
+void JSDrawModelEx(unsigned int model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) {
+    DrawModelEx(*ModelCacheDatabase::GetModel(model), position, rotationAxis, rotationAngle, scale, tint);
 }
 
-void JSDrawModelWires(Model model, Vector3 position, float scale, Color tint) {
-    DrawModelWires(model, position, scale, tint);
+void JSDrawModelWires(unsigned int model, Vector3 position, float scale, Color tint) {
+    DrawModelWires(*ModelCacheDatabase::GetModel(model), position, scale, tint);
 }
 
-void JSDrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) {
-    DrawModelWiresEx(model, position, rotationAxis, rotationAngle, scale, tint);
+void JSDrawModelWiresEx(unsigned int model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) {
+    DrawModelWiresEx(*ModelCacheDatabase::GetModel(model), position, rotationAxis, rotationAngle, scale, tint);
 }
 
 void JSDrawBoundingBox(BoundingBox box, Color color) {
@@ -297,6 +299,10 @@ RayHitInfo JSGetCollisionRayTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3
 
 RayHitInfo JSGetCollisionRayGround(Ray ray, float groundHeight) {
     return GetCollisionRayGround(ray, groundHeight);
+}
+
+void SetModelTexture(unsigned int id, unsigned int materialIndex, unsigned int mapsIndex, Texture2D texture) {
+    ModelCacheDatabase::GetModel(id)->materials[materialIndex].maps[mapsIndex].texture = texture;
 }
 
 EMSCRIPTEN_BINDINGS(raylibWebModels) {
@@ -383,4 +389,7 @@ EMSCRIPTEN_BINDINGS(raylibWebModels) {
     emscripten::function("GetCollisionRayModel", &JSGetCollisionRayModel);
     emscripten::function("GetCollisionRayTriangle", &JSGetCollisionRayTriangle);
     emscripten::function("GetCollisionRayGround", &JSGetCollisionRayGround);
+
+    // raylib-web functions
+    emscripten::function("SetModelTexture", &SetModelTexture);
 }

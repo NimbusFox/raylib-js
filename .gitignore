@@ -33,3 +33,10 @@
 
 bin/
 .vscode/
+
+examples/**/*.js
+!examples/**/src.js
+examples/**/*.wasm
+examples/**/*.html
+examples/**/*.html.symbols
+examples/**/*.wasm.map

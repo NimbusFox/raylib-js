@@ -12,35 +12,41 @@
 #pragma region GettersSetters
 
 #pragma region Font
-std::vector<Rectangle> FontRecsGetter(const Font& font) {
-    auto recs = std::vector<Rectangle>();
+emscripten::val FontRecsGetter(const Font& font) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < font.charsCount; i++) {
-        recs.push_back(font.recs[i]);
+        output.set(i, emscripten::val(font.recs[i]));
     }
 
-    return recs;
+    return output;
 }
 
-void FontRecsSetter(Font& font, std::vector<Rectangle> recs) {
-    for (auto i = 0; i < recs.size() || i < font.charsCount; i++) {
-        font.recs[i] = recs[i];
+void FontRecsSetter(Font& font, emscripten::val recs) {
+    auto count = 0;
+
+    while (!recs[count].isUndefined() && count < font.charsCount) {
+        font.recs[count] = recs[count].as<Rectangle>();
+        count++;
     }
 }
 
-std::vector<CharInfo> FontCharsGetter(const Font& font) {
-    auto chars = std::vector<CharInfo>();
+emscripten::val FontCharsGetter(const Font& font) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < font.charsCount; i++) {
-        chars.push_back(font.chars[i]);
+        output.set(i, emscripten::val(font.chars[i]));
     }
 
-    return chars;
+    return output;
 }
 
-void FontCharsSetter(Font& font, std::vector<CharInfo> chars) {
-    for (auto i = 0; i < chars.size() || i < font.charsCount; i++) {
-        font.chars[i] = chars[i];
+void FontCharsSetter(Font& font, emscripten::val chars) {
+    auto count = 0;
+
+    while (!chars[count].isUndefined() && count < font.charsCount) {
+        font.chars[count] = chars[count].as<CharInfo>();
+        count++;
     }
 }
 #pragma endregion
@@ -56,267 +62,308 @@ void ImageDataSetter(Image& image, intptr_t val) {
 
 #pragma endregion
 #pragma region Mesh
+emscripten::val MeshVertexCountGetter(const Mesh& mesh) {
+    return emscripten::val(mesh.vertexCount);
+}
 
-std::vector<float> MeshVerticesGetter(const Mesh& mesh) {
-    auto output = std::vector<float>();
+void MeshVertexCountSetter(Mesh& mesh, emscripten::val vertexCount) {
+    if (vertexCount.isNumber()) {
+        mesh.vertexCount = vertexCount.as<float>();
+
+        realloc(mesh.vertices, sizeof(float) * (mesh.vertexCount * 3));
+        realloc(mesh.texcoords, sizeof(float) * (mesh.vertexCount * 2));
+        realloc(mesh.texcoords, sizeof(float) * (mesh.vertexCount * 2));
+        realloc(mesh.texcoords2, sizeof(float) * (mesh.vertexCount * 2));
+        realloc(mesh.normals, sizeof(float) * (mesh.vertexCount * 3));
+        realloc(mesh.tangents, sizeof(float) * (mesh.vertexCount * 4));
+        realloc(mesh.colors, sizeof(unsigned char) * (mesh.vertexCount * 4));
+        realloc(mesh.indices, sizeof(unsigned short) * mesh.vertexCount);
+        realloc(mesh.animVertices, sizeof(float) * (mesh.vertexCount * 3));
+        realloc(mesh.animNormals, sizeof(float) * (mesh.vertexCount * 3));
+        realloc(mesh.boneIds, sizeof(int) * (mesh.vertexCount * 4));
+        realloc(mesh.boneWeights, sizeof(float) * (mesh.vertexCount * 4));
+        realloc(mesh.vboId, sizeof(unsigned int) * mesh.vertexCount);
+    }
+}
+
+emscripten::val MeshVerticesGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount * 3; i++) {
-        output.push_back(mesh.vertices[i]);
+        output.set(i, emscripten::val(mesh.vertices[i]));
     }
 
     return output;
 }
 
-void MeshVerticesSetter(Mesh& mesh, std::vector<float> vertices) {
-    if (vertices.size() != mesh.vertexCount * 3) {
-        return;
-    }
+void MeshVerticesSetter(Mesh& mesh, const emscripten::val& vertices) {
+    auto count = 0;
 
-    mesh.vertices = vertices.data();
+    while (vertices[count].isNumber() && count < mesh.vertexCount * 3) {
+        mesh.vertices[count] = vertices[count].as<float>();
+        count++;
+    }
 }
 
-std::vector<float> MeshTexcoordsGetter(const Mesh& mesh) {
-    auto output = std::vector<float>();
+emscripten::val MeshTexcoordsGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount * 2; i++) {
-        output.push_back(mesh.texcoords[i]);
+        output.set(i, emscripten::val(mesh.texcoords[i]));
     }
 
     return output;
 }
 
-void MeshTexcoordsSetter(Mesh& mesh, std::vector<float> texcoords) {
-    if (texcoords.size() != mesh.vertexCount * 2) {
-        return;
-    }
+void MeshTexcoordsSetter(Mesh& mesh, emscripten::val texcoords) {
+    auto count = 0;
 
-    mesh.texcoords = texcoords.data();
+    while (texcoords[count].isNumber() && count < mesh.vertexCount * 2) {
+        mesh.texcoords[count] = texcoords[count].as<float>();
+        count++;
+    }
 }
 
-std::vector<float> MeshTexcoords2Getter(const Mesh& mesh) {
-    auto output = std::vector<float>();
+emscripten::val MeshTexcoords2Getter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount * 2; i++) {
-        output.push_back(mesh.texcoords2[i]);
+        output.set(i, emscripten::val(mesh.texcoords2[i]));
     }
 
     return output;
 }
 
-void MeshTexcoords2Setter(Mesh& mesh, std::vector<float> texcoords2) {
-    if (texcoords2.size() != mesh.vertexCount * 2) {
-        return;
-    }
+void MeshTexcoords2Setter(Mesh& mesh, emscripten::val texcoords2) {
+    auto count = 0;
 
-    mesh.texcoords2 = texcoords2.data();
+    while (texcoords2[count].isNumber() && count < mesh.vertexCount * 2) {
+        mesh.texcoords2[count] = texcoords2[count].as<float>();
+        count++;
+    }
 }
 
-std::vector<float> MeshNormalsGetter(const Mesh& mesh) {
-    auto output = std::vector<float>();
+emscripten::val MeshNormalsGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount * 3; i++) {
-        output.push_back(mesh.normals[i]);
+        output.set(i, emscripten::val(mesh.normals[i]));
     }
 
     return output;
 }
 
-void MeshNormalsSetter(Mesh& mesh, std::vector<float> normals) {
-    if (normals.size() != mesh.vertexCount * 3) {
-        return;
-    }
+void MeshNormalsSetter(Mesh& mesh, emscripten::val normals) {
+    auto count = 0;
 
-    mesh.normals = normals.data();
+    while (normals[count].isNumber() && count < mesh.vertexCount * 3) {
+        mesh.normals[count] = normals[count].as<float>();
+        count++;
+    }
 }
 
-std::vector<float> MeshTangentsGetter(const Mesh& mesh) {
-    auto output = std::vector<float>();
+emscripten::val MeshTangentsGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount * 4; i++) {
-        output.push_back(mesh.tangents[i]);
+        output.set(i, emscripten::val(mesh.tangents[i]));
     }
 
     return output;
 }
 
-void MeshTangentsSetter(Mesh& mesh, std::vector<float> tangents) {
-    if (tangents.size() != mesh.vertexCount * 4) {
-        return;
-    }
+void MeshTangentsSetter(Mesh& mesh, emscripten::val tangents) {
+    auto count = 0;
 
-    mesh.tangents = tangents.data();
+    while (tangents[count].isNumber() && count < mesh.vertexCount * 4) {
+        mesh.tangents[count] = tangents[count].as<float>();
+        count++;
+    }
 }
 
-std::vector<unsigned char> MeshColorsGetter(const Mesh& mesh) {
-    auto output = std::vector<unsigned char>();
+emscripten::val MeshColorsGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount * 4; i++) {
-        output.push_back(mesh.colors[i]);
+        output.set(i, emscripten::val(mesh.colors[i]));
     }
 
     return output;
 }
 
-void MeshColorsSetter(Mesh& mesh, std::vector<unsigned char> colors) {
-    if (colors.size() != mesh.vertexCount * 4) {
-        return;
-    }
+void MeshColorsSetter(Mesh& mesh, emscripten::val colors) {
+    auto count = 0;
 
-    mesh.colors = colors.data();
+    while (colors[count].isNumber() && count < mesh.vertexCount * 4) {
+        mesh.colors[count] = colors[count].as<unsigned char>();
+        count++;
+    }
 }
 
-std::vector<unsigned short> MeshIndiciesGetter(const Mesh& mesh) {
-    auto output = std::vector<unsigned short>();
+emscripten::val MeshIndiciesGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount; i++) {
-        output.push_back(mesh.indices[i]);
+        output.set(i, emscripten::val(mesh.indices[i]));
     }
 
     return output;
 }
 
-void MeshIndiciesSetter(Mesh& mesh, std::vector<unsigned short> indicies) {
-    if (indicies.size() != mesh.vertexCount) {
-        return;
-    }
+void MeshIndiciesSetter(Mesh& mesh, emscripten::val indicies) {
+    auto count = 0;
 
-    mesh.indices = indicies.data();
+    while (indicies[count].isNumber() && count < mesh.vertexCount) {
+        mesh.indices[count] = indicies[count].as<unsigned short>();
+        count++;
+    }
 }
 
-std::vector<float> MeshAnimVerticesGetter(const Mesh& mesh) {
-    auto output = std::vector<float>();
+emscripten::val MeshAnimVerticesGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount * 3; i++) {
-        output.push_back(mesh.animVertices[i]);
+        output.set(i, emscripten::val(mesh.animVertices[i]));
     }
 
     return output;
 }
 
-void MeshAnimVerticesSetter(Mesh& mesh, std::vector<float> animVertices) {
-    if (animVertices.size() != mesh.vertexCount * 3) {
-        return;
-    }
+void MeshAnimVerticesSetter(Mesh& mesh, emscripten::val animVertices) {
+    auto count = 0;
 
-    mesh.animVertices = animVertices.data();
+    while (animVertices[count].isNumber() && count < mesh.vertexCount * 3) {
+        mesh.animVertices[count] = animVertices[count].as<float>();
+        count++;
+    }
 }
 
-std::vector<float> MeshAnimNormalsGetter(const Mesh& mesh) {
-    auto output = std::vector<float>();
+emscripten::val MeshAnimNormalsGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount * 3; i++) {
-        output.push_back(mesh.animNormals[i]);
+        output.set(i, emscripten::val(mesh.animNormals[i]));
     }
 
     return output;
 }
 
-void MeshAnimNormalsSetter(Mesh& mesh, std::vector<float> animNormals) {
-    if (animNormals.size() != mesh.vertexCount * 3) {
-        return;
-    }
+void MeshAnimNormalsSetter(Mesh& mesh, emscripten::val animNormals) {
+    auto count = 0;
 
-    mesh.animNormals = animNormals.data();
+    while (animNormals[count].isNumber() && count < mesh.vertexCount * 3) {
+        mesh.animNormals[count] = animNormals[count].as<float>();
+        count++;
+    }
 }
 
-std::vector<int> MeshBoneIdsGetter(const Mesh& mesh) {
-    auto output = std::vector<int>();
+emscripten::val MeshBoneIdsGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount * 4; i++) {
-        output.push_back(mesh.boneIds[i]);
+        output.set(i, emscripten::val(mesh.boneIds[i]));
     }
 
     return output;
 }
 
-void MeshBoneIdsSetter(Mesh& mesh, std::vector<int> boneIds) {
-    if (boneIds.size() != mesh.vertexCount * 4) {
-        return;
-    }
+void MeshBoneIdsSetter(Mesh& mesh, emscripten::val boneIds) {
+    auto count = 0;
 
-    mesh.boneIds = boneIds.data();
+    while (boneIds[count].isNumber() && count < mesh.vertexCount * 4) {
+        mesh.boneIds[count] = boneIds[count].as<int>();
+        count++;
+    }
 }
 
-std::vector<float> MeshBoneWeightsGetter(const Mesh& mesh) {
-    auto output = std::vector<float>();
+emscripten::val MeshBoneWeightsGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount * 4; i++) {
-        output.push_back(mesh.boneWeights[i]);
+        output.set(i, emscripten::val(mesh.boneWeights[i]));
     }
 
     return output;
 }
 
-void MeshBoneWeightsSetter(Mesh& mesh, std::vector<float> boneWeights) {
-    if (boneWeights.size() != mesh.vertexCount * 4) {
-        return;
-    }
+void MeshBoneWeightsSetter(Mesh& mesh, emscripten::val boneWeights) {
+    auto count = 0;
 
-    mesh.boneWeights = boneWeights.data();
+    while (boneWeights[count].isNumber() && count < mesh.vertexCount * 4) {
+        mesh.boneWeights[count] = boneWeights[count].as<float>();
+        count++;
+    }
 }
 
-std::vector<unsigned int> MeshVboIdGetter(const Mesh& mesh) {
-    auto output = std::vector<unsigned int>();
+emscripten::val MeshVboIdGetter(const Mesh& mesh) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < mesh.vertexCount; i++) {
-        output.push_back(mesh.vboId[i]);
+        output.set(i, emscripten::val(mesh.vboId[i]));
     }
 
     return output;
 }
 
-void MeshVboIdSetter(Mesh& mesh, std::vector<unsigned int> vboId) {
-    if (vboId.size() != mesh.vertexCount) {
-        return;
-    }
+void MeshVboIdSetter(Mesh& mesh, emscripten::val vboId) {
+    auto count = 0;
 
-    mesh.vboId = vboId.data();
+    while (vboId[count].isNumber() && count < mesh.vertexCount) {
+        mesh.vboId[count] = vboId[count].as<unsigned int>();
+        count++;
+    }
 }
 
 #pragma endregion
 #pragma region Material
+emscripten::val MaterialShaderGetter(const Material& material) {
+    return emscripten::val(material.shader);
+}
 
-emscripten::val MaterialMapsGetter(const Material& material) {
-    auto output = std::vector<MaterialMap>();
-
-    for (auto i = 0; i < MAX_MATERIAL_MAPS; i++) {
-        output.push_back(material.maps[i]);
+void MaterialShaderSetter(Material& material, emscripten::val shader) {
+    if (shader.isUndefined()) {
+        return;
     }
 
-    return emscripten::val::array(output);
+    material.shader = shader.as<Shader>();
+}
+
+emscripten::val MaterialMapsGetter(const Material& material) {
+    auto output = emscripten::val::array();
+
+    for (auto i = 0; i < MAX_MATERIAL_MAPS; i++) {
+        output.set(i, material.maps[i]);
+    }
+
+    return output;
 }
 
 void MaterialMapsSetter(Material& material, emscripten::val maps) {
     auto count = 0;
-    auto mats = std::vector<MaterialMap>();
-    while (!maps[count].isUndefined()) {
-        mats.push_back(maps[count].as<MaterialMap>());
+
+    while (!maps[count].isUndefined() && count < MAX_MATERIAL_MAPS) {
+        material.maps[count] = maps[count].as<MaterialMap>();
         count++;
     }
-
-    material.maps = mats.data();
 }
 
 emscripten::val MaterialParamsGetter(const Material& material) {
-    auto output = std::vector<float>();
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < *(&material.params + 1) - material.params; i++) {
-        output.push_back(material.params[i]);
+        output.set(i, material.params[i]);
     }
 
-    return emscripten::val::array(output);
+    return output;
 }
 
 void MaterialParamsSetter(Material& material, emscripten::val params) {
     auto count = 0;
-    auto param = std::vector<float>();
 
-    while (!params[count].isUndefined()) {
-        param.push_back(params[count].as<float>());
+    while (!params[count].isUndefined() && count < *(&material.params + 1) - material.params) {
+        material.params[count] = params[count].as<float>();
         count++;
     }
-
-    material.params = param.data();
 }
 #pragma endregion
 #pragma region Shader
@@ -328,22 +375,23 @@ void ShaderIdSetter(Shader& shader, emscripten::val id) {
     shader.id = id.as<unsigned int>();
 }
 
-std::vector<int> ShaderLocsGetter(const Shader& shader) {
-    auto output = std::vector<int>();
+emscripten::val ShaderLocsGetter(const Shader& shader) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < MAX_SHADER_LOCATIONS; i++) {
-        output.push_back(shader.locs[i]);
+        output.set(i, emscripten::val(shader.locs[i]));
     }
 
     return output;
 }
 
-void ShaderLocsSetter(Shader& shader, std::vector<int> locs) {
-    if (locs.size() != MAX_SHADER_LOCATIONS) {
-        return;
-    }
+void ShaderLocsSetter(Shader& shader, emscripten::val locs) {
+    auto count = 0;
 
-    shader.locs = locs.data();
+    while (locs[count].isNumber() && count < MAX_SHADER_LOCATIONS) {
+        shader.locs[count] = locs[count].as<int>();
+        count++;
+    }
 }
 #pragma endregion
 #pragma region BoneInfo
@@ -364,173 +412,229 @@ void BoneInfoNameSetter(BoneInfo& boneInfo, std::string name) {
 }
 #pragma endregion
 #pragma region Model
-std::vector<Mesh> ModelMeshesGetter(const Model& model) {
-    auto output = std::vector<Mesh>();
+emscripten::val ModelMeshCountGetter(const Model& model) {
+    return emscripten::val(model.meshCount);
+}
+
+void ModelMeshCountSetter(Model& model, emscripten::val meshCount) {
+    if (meshCount.isNumber()) {
+        model.meshCount = meshCount.as<int>();
+        realloc(model.meshes, sizeof(Mesh) * model.meshCount);
+        realloc(model.meshMaterial, sizeof(int) * model.meshCount);
+    }
+}
+
+emscripten::val ModelMaterialCountGetter(const Model& model) {
+    return emscripten::val(model.materialCount);
+}
+
+void ModelMaterialCountSetter(Model& model, emscripten::val materialCount) {
+    if (materialCount.isNumber()) {
+        model.materialCount = materialCount.as<int>();
+        realloc(model.materials, sizeof(Material) * model.materialCount);
+    }
+}
+
+emscripten::val ModelMeshesGetter(const Model& model) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < model.meshCount; i++) {
-        output.push_back(model.meshes[i]);
+        output.set(i, emscripten::val(model.meshes[i]));
     }
 
     return output;
 }
 
-void ModelMeshesSetter(Model& model, std::vector<Mesh> meshes) {
-    model.meshCount = meshes.size();
+void ModelMeshesSetter(Model& model, emscripten::val meshes) {
+    auto count = 0;
 
-    model.meshes = meshes.data();
+    while (!meshes[count].isUndefined() && count < model.meshCount) {
+        model.meshes[count] = meshes[count].as<Mesh>();
+        count++;
+    }
 }
 
 emscripten::val ModelMaterialsGetter(const Model& model) {
-    auto output = std::vector<Material>();
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < model.materialCount; i++) {
-        output.push_back(model.materials[i]);
+        output.set(i, emscripten::val(model.materials[i]));
     }
 
-    return emscripten::val::array(output);
+    return output;
 }
 
 void ModelMaterialsSetter(Model& model, emscripten::val materials) {
     auto count = 0;
-    auto mats = std::vector<Material>();
-    while (!materials[count].isUndefined()) {
-        mats.push_back(materials[count].as<Material>());
+
+    while (!materials[count].isUndefined() && count < model.materialCount) {
+        model.materials[count] = materials[count].as<Material>();
         count++;
     }
-
-    model.materialCount = count;
-
-    model.materials = mats.data();
 }
 
 emscripten::val ModelMeshMaterialGetter(const Model& model) {
-    auto output = std::vector<int>();
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < model.meshCount; i++) {
-        output.push_back(model.meshMaterial[i]);
+        output.set(i, emscripten::val(model.meshMaterial[i]));
     }
 
-    return emscripten::val::array(output);
+    return output;
 }
 
 void ModelMeshMaterialSetter(Model& model, emscripten::val meshMaterial) {
     auto count = 0;
-    auto mats = std::vector<int>();
-    while (!meshMaterial[count].isUndefined()) {
-        mats.push_back(meshMaterial[count].as<int>());
+    while (!meshMaterial[count].isUndefined() && count < model.meshCount) {
+        model.meshMaterial[count] = meshMaterial[count].as<int>();
         count++;
     }
-
-    model.meshMaterial = mats.data();
 }
 
-std::vector<BoneInfo> ModelBonesGetter(const Model& model) {
-    auto output = std::vector<BoneInfo>();
+emscripten::val ModelBoneCountGetter(const Model& model) {
+    return emscripten::val(model.boneCount);
+}
+
+void ModelBoneCountSetter(Model& model, emscripten::val boneCount) {
+    if (boneCount.isNumber()) {
+        model.boneCount = boneCount.as<int>();
+
+        realloc(model.bones, sizeof(BoneInfo) * model.boneCount);
+        realloc(model.bindPose, sizeof(Transform) * model.boneCount);
+    }
+}
+
+emscripten::val ModelBonesGetter(const Model& model) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < model.boneCount; i++) {
-        output.push_back(model.bones[i]);
+        output.set(i, emscripten::val(model.bones[i]));
     }
 
     return output;
 }
 
-void ModelBonesSetter(Model& model, std::vector<BoneInfo> bones) {
-    model.boneCount = bones.size();
+void ModelBonesSetter(Model& model, emscripten::val bones) {
+    auto count = 0;
 
-    model.bones = bones.data();
+    while (!bones[count].isUndefined() && count < model.boneCount) {
+        model.bones[count] = bones[count].as<BoneInfo>();
+        count++;
+    }
 }
 
-std::vector<Transform> ModelBindPoseGetter(const Model& model) {
-    auto output = std::vector<Transform>();
+emscripten::val ModelBindPoseGetter(const Model& model) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < model.boneCount; i++) {
-        output.push_back(model.bindPose[i]);
+        output.set(i, emscripten::val(model.bindPose[i]));
     }
 
     return output;
 }
 
-void ModelBindPoseSetter(Model& model, std::vector<Transform> bindPose) {
-    if (bindPose.size() > model.boneCount) {
-        return;
-    }
+void ModelBindPoseSetter(Model& model, emscripten::val bindPose) {
+    auto count = 0;
 
-    model.bindPose = bindPose.data();
+    while (!bindPose[count].isUndefined() && count < model.boneCount) {
+        model.bindPose[count]  = bindPose[count].as<Transform>();
+        count++;
+    }
 }
 #pragma endregion
 #pragma region ModelAnimation
-std::vector<BoneInfo> ModelAnimationBonesGetter(const ModelAnimation& modelAnimation) {
-    auto output = std::vector<BoneInfo>();
+emscripten::val ModelAnimationBoneCountGetter(const ModelAnimation& modelAnimation) {
+    return emscripten::val(modelAnimation.boneCount);
+}
+
+void ModelAnimationBoneCountSetter(ModelAnimation& modelAnimation, emscripten::val boneCount) {
+
+}
+
+emscripten::val ModelAnimationFrameCountGetter(const ModelAnimation& modelAnimation) {
+    return emscripten::val(modelAnimation.frameCount);
+}
+
+void ModelAnimationFrameCountSetter(ModelAnimation& modelAnimation, emscripten::val frameCount) {
+    
+}
+
+emscripten::val ModelAnimationBonesGetter(const ModelAnimation& modelAnimation) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < modelAnimation.boneCount; i++) {
-        output.push_back(modelAnimation.bones[i]);
+        output.set(i, emscripten::val(modelAnimation.bones[i]));
     }
 
     return output;
 }
 
-void ModelAnimationBonesSetter(ModelAnimation& modelAnimation, std::vector<BoneInfo> bones) {
-    modelAnimation.boneCount = bones.size();
+void ModelAnimationBonesSetter(ModelAnimation& modelAnimation, emscripten::val bones) {
+    auto count = 0;
 
-    modelAnimation.bones = bones.data();
+    while (!bones[count].isUndefined() && count < modelAnimation.boneCount) {
+        modelAnimation.bones[count] = bones[count].as<BoneInfo>();
+        count++;
+    }
 }
 
-std::vector<std::vector<Transform>> ModelAnimationFramePosesGetter(const ModelAnimation& modelAnimation) {
-    auto output = std::vector<std::vector<Transform>>();
+emscripten::val ModelAnimationFramePosesGetter(const ModelAnimation& modelAnimation) {
+    auto output = emscripten::val::array();
 
     for (auto i = 0; i < modelAnimation.frameCount; i++) {
-        output.push_back(std::vector<Transform>());
+        output.set(i, emscripten::val::array());
 
         for (auto j = 0; j < modelAnimation.boneCount; j++) {
-            output[i].push_back(modelAnimation.framePoses[i][j]);
+            output[i].set(j, emscripten::val(modelAnimation.framePoses[i][j]));
         }
     }
 
     return output;
 }
 
-void ModelAnimationFramePosesSetter(ModelAnimation& modelAnimation, std::vector<std::vector<Transform>> framePoses) {
-    modelAnimation.frameCount = framePoses.size();
+void ModelAnimationFramePosesSetter(ModelAnimation& modelAnimation, emscripten::val framePoses) {
+    auto count = 0;
+    auto count2 = 0;
 
-    modelAnimation.framePoses = new Transform*[modelAnimation.frameCount];
+    while (framePoses[count].isArray() && count < modelAnimation.frameCount) {
+        count2 = 0;
 
-    for (auto i = 0; i < framePoses.size(); i++) {
-        modelAnimation.framePoses[i] = new Transform[framePoses[i].size()];
-
-        for (auto j = 0; j < framePoses[i].size(); i++) {
-            modelAnimation.framePoses[i][j] = framePoses[i][j];
+        while (!framePoses[count][count2].isUndefined() && count2 < modelAnimation.boneCount) {
+            modelAnimation.framePoses[count][count2] = framePoses[count][count2].as<Transform>();
+            count2++;
         }
+        count++;
     }
 }
 #pragma endregion
 #pragma region VrDeviceInfo
-std::vector<float> VrDeviceInfoLensDistortionValuesGetter(const VrDeviceInfo& vrDeviceInfo) {
-    auto output = std::vector<float>();
+emscripten::val VrDeviceInfoLensDistortionValuesGetter(const VrDeviceInfo& vrDeviceInfo) {
+    auto output = emscripten::val::array();
 
-    output.push_back(vrDeviceInfo.lensDistortionValues[0]);
-    output.push_back(vrDeviceInfo.lensDistortionValues[1]);
-    output.push_back(vrDeviceInfo.lensDistortionValues[2]);
-    output.push_back(vrDeviceInfo.lensDistortionValues[3]);
+    output[0] = emscripten::val(vrDeviceInfo.lensDistortionValues[0]);
+    output[1] = emscripten::val(vrDeviceInfo.lensDistortionValues[1]);
+    output[2] = emscripten::val(vrDeviceInfo.lensDistortionValues[2]);
+    output[3] = emscripten::val(vrDeviceInfo.lensDistortionValues[3]);
 
     return output;
 }
 
-void VrDeviceInfoLensDistortionValuesSetter(const VrDeviceInfo& vrDeviceInfo, std::vector<float> lensDistortionValues) {
+void VrDeviceInfoLensDistortionValuesSetter(const VrDeviceInfo& vrDeviceInfo, emscripten::val lensDistortionValues) {
     return;
 }
 
-std::vector<float> VrDeviceInfoChromaAbCorrectionGetter(const VrDeviceInfo& vrDeviceInfo) {
-    auto output = std::vector<float>();
+emscripten::val VrDeviceInfoChromaAbCorrectionGetter(const VrDeviceInfo& vrDeviceInfo) {
+    auto output = emscripten::val::array();
 
-    output.push_back(vrDeviceInfo.chromaAbCorrection[0]);
-    output.push_back(vrDeviceInfo.chromaAbCorrection[1]);
-    output.push_back(vrDeviceInfo.chromaAbCorrection[2]);
-    output.push_back(vrDeviceInfo.chromaAbCorrection[3]);
+    output[0] = emscripten::val(vrDeviceInfo.chromaAbCorrection[0]);
+    output[1] = emscripten::val(vrDeviceInfo.chromaAbCorrection[1]);
+    output[2] = emscripten::val(vrDeviceInfo.chromaAbCorrection[2]);
+    output[3] = emscripten::val(vrDeviceInfo.chromaAbCorrection[3]);
 
     return output;
 }
 
-void VrDeviceInfoChromaAbCorrectionSetter(const VrDeviceInfo& vrDeviceInfo, std::vector<float> chromaAbCorrection) {
+void VrDeviceInfoChromaAbCorrectionSetter(const VrDeviceInfo& vrDeviceInfo, emscripten::val chromaAbCorrection) {
     return;
 }
 #pragma endregion
@@ -637,7 +741,7 @@ EMSCRIPTEN_BINDINGS(raylibWebStructs) {
         .field("type", &NPatchInfo::type);
 
     emscripten::value_object<Mesh>("Mesh")
-        .field("vertexCount", &Mesh::vertexCount)
+        .field("vertexCount", &MeshVertexCountGetter, &MeshVertexCountSetter)
         .field("triangleCount", &Mesh::triangleCount)
         .field("vertices", &MeshVerticesGetter, &MeshVerticesSetter)
         .field("texcoords", &MeshTexcoordsGetter, &MeshTexcoordsSetter)
@@ -654,7 +758,7 @@ EMSCRIPTEN_BINDINGS(raylibWebStructs) {
         .field("vboId", &MeshVboIdGetter, &MeshVboIdSetter);
 
     emscripten::value_object<Material>("Material")
-        .field("shader", &Material::shader)
+        .field("shader", &MaterialShaderGetter, &MaterialShaderSetter)
         .field("maps", &MaterialMapsGetter, &MaterialMapsSetter)
         .field("params", &MaterialParamsGetter, &MaterialParamsSetter);
 
@@ -678,12 +782,12 @@ EMSCRIPTEN_BINDINGS(raylibWebStructs) {
 
     emscripten::value_object<Model>("Model")
         .field("transform", &Model::transform)
-        .field("meshCount", &Model::meshCount)
-        .field("materialCount", &Model::materialCount)
+        .field("meshCount", &ModelMeshCountGetter, &ModelMeshCountSetter)
+        .field("materialCount", &ModelMaterialCountGetter, &ModelMaterialCountSetter)
         .field("meshes", &ModelMeshesGetter, &ModelMeshesSetter)
         .field("materials", &ModelMaterialsGetter, &ModelMaterialsSetter)
         .field("meshMaterial", &ModelMeshMaterialGetter, &ModelMeshMaterialSetter)
-        .field("boneCount", &Model::boneCount)
+        .field("boneCount", &ModelBoneCountGetter, &ModelBoneCountSetter)
         .field("bones", &ModelBonesGetter, &ModelBonesSetter)
         .field("bindPose", &ModelBindPoseGetter, &ModelBindPoseSetter);
 
@@ -692,8 +796,8 @@ EMSCRIPTEN_BINDINGS(raylibWebStructs) {
         .field("max", &BoundingBox::max);
 
     emscripten::value_object<ModelAnimation>("ModelAnimation")
-        .field("boneCount", &ModelAnimation::boneCount)
-        .field("frameCount", &ModelAnimation::frameCount)
+        .field("boneCount", &ModelAnimationBoneCountGetter, &ModelAnimationBoneCountSetter)
+        .field("frameCount", &ModelAnimationFrameCountGetter, &ModelAnimationFrameCountSetter)
         .field("bones", &ModelAnimationBonesGetter, &ModelAnimationBonesSetter)
         .field("framePoses", &ModelAnimationFramePosesGetter, &ModelAnimationFramePosesSetter);
 
