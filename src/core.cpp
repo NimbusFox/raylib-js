@@ -167,7 +167,7 @@ Vector2 JSGetGesturePinchVector() {
     return GetGesturePinchVector();
 }
 
-void JSSetCameraMode(Camera3D camera, int mode) {
+void JSSetCameraMode(Camera camera, int mode) {
     SetCameraMode(camera, mode);
 }
 
