@@ -8,4 +8,4 @@ models: dependency
 	cd models && emmake make
 
 dependency:
-	cd ../src && emmake make static BUILD=DEBUG
+	cd ../src/WebAssembly && emmake make static BUILD=DEBUG

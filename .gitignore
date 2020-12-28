@@ -40,3 +40,6 @@ examples/**/*.wasm
 examples/**/*.html
 examples/**/*.html.symbols
 examples/**/*.wasm.map
+
+*node_modules/
+package-lock.json

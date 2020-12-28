@@ -72,8 +72,8 @@ build: $(OBJS) dependencies
 static: $(OBJS) dependencies
 
 dependencies:
-	cd ../raylib/src && emmake make PLATFORM=PLATFORM_WEB
-	mkdir -p ../bin
+	cd ../../raylib/src && emmake make PLATFORM=PLATFORM_WEB
+	mkdir -p ../../bin
 
 raylibWeb.o: raylibWeb.cpp
 	em++ -c $< $(CFLAGS) $(INCLUDES)

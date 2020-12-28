@@ -1,0 +1,23 @@
+{
+  "name": "raylib-web",
+  "version": "0.0.1",
+  "description": "Javascript bindings for raylib",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NimbusFox/raylib-web.git"
+  },
+  "author": "NimbusFox",
+  "license": "Zlib",
+  "bugs": {
+    "url": "https://github.com/NimbusFox/raylib-web/issues"
+  },
+  "homepage": "https://github.com/NimbusFox/raylib-web#readme",
+  "dependencies": {
+    "browserify": "^17.0.0",
+    "tsc": "^1.20150623.0"
+  }
+}

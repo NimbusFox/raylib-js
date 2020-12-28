@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "noImplicitAny": true,
+      "removeComments": false,
+      "preserveConstEnums": true,
+      "sourceMap": true,
+      "declaration": true,
+      "declarationDir": "../../bin/typescript/",
+      "outDir": "../../bin/js/"
+    },
+    "include": ["./*"],
+    "exclude": ["node_modules", "**/*.spec.ts"]
+}
