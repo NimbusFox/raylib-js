@@ -4,7 +4,7 @@
 #include <map>
 #include "raylib.h"
 
-class ModelCacheDatabase {
+class CacheDatabase {
     private:
         static std::map<unsigned int, Model> models;
     public:

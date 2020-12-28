@@ -1,7 +1,7 @@
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
 #include <raylib.h>
-#include "cache/ModelCacheDatabase.h"
+#include "cache/CacheDatabase.h"
 
 emscripten::val _loop = emscripten::val("");
 
@@ -24,19 +24,19 @@ EMSCRIPTEN_BINDINGS(raylibWeb) {
 
 unsigned int currentId = 1u;
 
-std::map<unsigned int, Model> ModelCacheDatabase::models = std::map<unsigned int, Model>();
+std::map<unsigned int, Model> CacheDatabase::models = std::map<unsigned int, Model>();
 
-unsigned int ModelCacheDatabase::AddModel(Model model) {
+unsigned int CacheDatabase::AddModel(Model model) {
     models.insert({currentId, model});
 
     return currentId++;
 }
 
-Model* ModelCacheDatabase::GetModel(unsigned int id) {
+Model* CacheDatabase::GetModel(unsigned int id) {
     return &models[id];
 }
 
-void ModelCacheDatabase::RemoveModel(unsigned int id) {
+void CacheDatabase::RemoveModel(unsigned int id) {
     UnloadModel(models[id]);
     models.erase(id);
 }
