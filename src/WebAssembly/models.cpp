@@ -2,7 +2,7 @@
 #include <emscripten/emscripten.h>
 #include <raylib.h>
 
-#include "cache/ModelCacheDatabase.h"
+#include "cacheDatabase.h"
 
 // Bindings up to date with raylib 3.5
 // https://www.raylib.com/cheatsheet/cheatsheet.html
@@ -83,11 +83,11 @@ void JSDrawGizmo(Vector3 position) {
 }
 
 unsigned int JSLoadModel(std::string fileName) {
-    return ModelCacheDatabase::AddModel(LoadModel(fileName.c_str()));
+    return CacheDatabase::AddModel(LoadModel(fileName.c_str()));
 }
 
-unsigned int JSLoadModelFromMesh(Mesh mesh) {
-    return ModelCacheDatabase::AddModel(LoadModelFromMesh(mesh));
+unsigned int JSLoadModelFromMesh(unsigned int mesh) {
+    return CacheDatabase::AddModel(LoadModelFromMesh(CacheDatabase::GetMesh(mesh)));
 }
 
 void JSUnloadModel(Model model) {
@@ -98,15 +98,15 @@ void JSUnloadModelKeepMeshes(Model model) {
     UnloadModelKeepMeshes(model);
 }
 
-std::vector<Mesh> JSLoadMeshes(std::string fileName) {
-    auto output = std::vector<Mesh>();
+std::vector<unsigned int> JSLoadMeshes(std::string fileName) {
+    auto output = std::vector<unsigned int>();
 
     auto count = 0;
 
     auto data = LoadMeshes(fileName.c_str(), &count);
 
     for (auto i = 0; i < count; i++) {
-        output.push_back(data[i]);
+        output.push_back(CacheDatabase::AddMesh(data[i]));
     }
 
     return output;
@@ -172,44 +172,44 @@ bool JSIsModelAnimationValid(Model model, ModelAnimation anim) {
     return IsModelAnimationValid(model, anim);
 }
 
-Mesh JSGenMeshPoly(int sides, float radius) {
-    return GenMeshPoly(sides, radius);
+unsigned int JSGenMeshPoly(int sides, float radius) {
+    return CacheDatabase::AddMesh(GenMeshPoly(sides, radius));
 }
 
-Mesh JSGenMeshPlane(float width, float length, int resX, int resZ) {
-    return GenMeshPlane(width, length, resX, resZ);
+unsigned int JSGenMeshPlane(float width, float length, int resX, int resZ) {
+    return CacheDatabase::AddMesh(GenMeshPlane(width, length, resX, resZ));
 }
 
-Mesh JSGenMeshCube(float width, float height, float length) {
-    return GenMeshCube(width, height, length);
+unsigned int JSGenMeshCube(float width, float height, float length) {
+    return CacheDatabase::AddMesh(GenMeshCube(width, height, length));
 }
 
-Mesh JSGenMeshSphere(float radius, int rings, int slices) {
-    return GenMeshSphere(radius, rings, slices);
+unsigned int JSGenMeshSphere(float radius, int rings, int slices) {
+    return CacheDatabase::AddMesh(GenMeshSphere(radius, rings, slices));
 }
 
-Mesh JSGenMeshHemiSphere(float radius, int rings, int slices) {
-    return GenMeshHemiSphere(radius, rings, slices);
+unsigned int JSGenMeshHemiSphere(float radius, int rings, int slices) {
+    return CacheDatabase::AddMesh(GenMeshHemiSphere(radius, rings, slices));
 }
 
-Mesh JSGenMeshCylinder(float radius, float height, int slices) {
-    return GenMeshCylinder(radius, height, slices);
+unsigned int JSGenMeshCylinder(float radius, float height, int slices) {
+    return CacheDatabase::AddMesh(GenMeshCylinder(radius, height, slices));
 }
 
-Mesh JSGenMeshTorus(float radius, float size, int radSeg, int sides) {
-    return GenMeshTorus(radius, size, radSeg, sides);
+unsigned int JSGenMeshTorus(float radius, float size, int radSeg, int sides) {
+    return CacheDatabase::AddMesh(GenMeshTorus(radius, size, radSeg, sides));
 }
 
-Mesh JSGenMeshKnot(float radius, float size, int radSeg, int sides) {
-    return GenMeshKnot(radius, size, radSeg, sides);
+unsigned int JSGenMeshKnot(float radius, float size, int radSeg, int sides) {
+    return CacheDatabase::AddMesh(GenMeshKnot(radius, size, radSeg, sides));
 }
 
-Mesh JSGenMeshHeightmap(Image heightmap, Vector3 size) {
-    return GenMeshHeightmap(heightmap, size);
+unsigned int JSGenMeshHeightmap(Image heightmap, Vector3 size) {
+    return CacheDatabase::AddMesh(GenMeshHeightmap(heightmap, size));
 }
 
-Mesh JSGenMeshCubicmap(Image cubicmap, Vector3 cubeSize) {
-    return GenMeshCubicmap(cubicmap, cubeSize);
+unsigned int JSGenMeshCubicmap(Image cubicmap, Vector3 cubeSize) {
+    return CacheDatabase::AddMesh(GenMeshCubicmap(cubicmap, cubeSize));
 }
 
 BoundingBox JSMeshBoundingBox(Mesh mesh) {
@@ -229,19 +229,19 @@ void JSMeshNormalsSmooth(Mesh *mesh) {
 }
 
 void JSDrawModel(unsigned int model, Vector3 position, float scale, Color tint) {
-    DrawModel(*ModelCacheDatabase::GetModel(model), position, scale, tint);
+    DrawModel(CacheDatabase::GetModel(model), position, scale, tint);
 }
 
 void JSDrawModelEx(unsigned int model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) {
-    DrawModelEx(*ModelCacheDatabase::GetModel(model), position, rotationAxis, rotationAngle, scale, tint);
+    DrawModelEx(CacheDatabase::GetModel(model), position, rotationAxis, rotationAngle, scale, tint);
 }
 
 void JSDrawModelWires(unsigned int model, Vector3 position, float scale, Color tint) {
-    DrawModelWires(*ModelCacheDatabase::GetModel(model), position, scale, tint);
+    DrawModelWires(CacheDatabase::GetModel(model), position, scale, tint);
 }
 
 void JSDrawModelWiresEx(unsigned int model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) {
-    DrawModelWiresEx(*ModelCacheDatabase::GetModel(model), position, rotationAxis, rotationAngle, scale, tint);
+    DrawModelWiresEx(CacheDatabase::GetModel(model), position, rotationAxis, rotationAngle, scale, tint);
 }
 
 void JSDrawBoundingBox(BoundingBox box, Color color) {
@@ -302,7 +302,7 @@ RayHitInfo JSGetCollisionRayGround(Ray ray, float groundHeight) {
 }
 
 void SetModelTexture(unsigned int id, unsigned int materialIndex, unsigned int mapsIndex, Texture2D texture) {
-    ModelCacheDatabase::GetModel(id)->materials[materialIndex].maps[mapsIndex].texture = texture;
+    CacheDatabase::GetModel(id).materials[materialIndex].maps[mapsIndex].texture = texture;
 }
 
 EMSCRIPTEN_BINDINGS(raylibWebModels) {

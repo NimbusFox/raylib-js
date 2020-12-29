@@ -31,7 +31,7 @@ Module.onRuntimeInitialized = function () {
 
     Module.SetCameraMode(camera, 2);
 
-    Module.SetLoop(loop);
+    loop();
 }
 
 function loop() {
@@ -67,5 +67,9 @@ function loop() {
         
         Module.EndMode3D();
 
+        Module.DrawFPS(0, 0);
+
     Module.EndDrawing();
+
+    setTimeout(loop);
 }

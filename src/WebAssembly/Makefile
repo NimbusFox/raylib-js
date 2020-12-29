@@ -48,20 +48,20 @@ ifeq ($(PLATFORM),PLATFORM_DRM)
     endif
 endif
 
-OBJS = raylibWeb.o structs.o core.o shapes.o textures.o text.o models.o shaders.o
+OBJS = raylibWeb.o cacheDatabase.o structs.o core.o shapes.o textures.o text.o models.o shaders.o
 ARGS = $(A)--pre-js settings.js --no-entry -s USE_GLFW=3 --bind 
 CFLAGS = --bind --no-entry -s USE_GLFW=3
-LINKS = -L../raylib/src -lraylib
-INCLUDES = -I../raylib/src -I../include
+LINKS = -L../../raylib/src -lraylib
+INCLUDES = -I../../raylib/src -I../../include
 
-BUILD ?= DEBUG
+BUILD ?= RELEASE
 
 ifeq ($(BUILD),RELEASE)
 	CFLAGS += -Os
-	ARGS += -Os -o ../bin/raylib-web.js 
+	ARGS += -Os -o ../../bin/raylib.js 
 else
 	CFLAGS += -g
-	ARGS += -g4 --shell-file=../raylib/src/shell.html -o ../bin/raylib.html --source-map-base / --emit-symbol-map
+	ARGS += -g4 --shell-file=../../raylib/src/shell.html -o ../../bin/raylib.html --source-map-base / --emit-symbol-map
 endif
 
 all: build static
@@ -70,10 +70,14 @@ build: $(OBJS) dependencies
 	em++ $(M)$(ARGS) $(LINKS) $(OBJS)
 
 static: $(OBJS) dependencies
+	em++ -shared $(LINKS) $(OBJS) -o ../../bin/raylibweb.bc
 
 dependencies:
 	cd ../../raylib/src && emmake make PLATFORM=PLATFORM_WEB
 	mkdir -p ../../bin
+
+cacheDatabase.o: cacheDatabase.cpp
+	em++ -c $< $(CFLAGS) $(INCLUDES)
 
 raylibWeb.o: raylibWeb.cpp
 	em++ -c $< $(CFLAGS) $(INCLUDES)
