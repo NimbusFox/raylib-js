@@ -1,9 +1,13 @@
-debug: copyDefinitions
-	tsc -p ./tsconfig.debug.json
+debug: dependencies
+	../../node_modules/.bin/tsc -p ./tsconfig.debug.json
 
-release: copyDefinitions
-	tsc -p ./tsconfig.release.json
-	./node_modules/.bin/browserify ../../bin/js/raylibWeb.js -o ../../bin/raylibWeb.js
+release: dependencies ts_release
+	
+examples: ts_release
+	cd ../WebAssembly && emmake make examples MODULE=TRUE
 
-copyDefinitions:
-	cp -r ./definitions/*.d.ts ../../bin/typescript
+ts_release:
+	../../node_modules/.bin/tsc -p ./tsconfig.release.json
+
+dependencies:
+	cd ../WebAssembly && emmake make build MODULE=TRUE

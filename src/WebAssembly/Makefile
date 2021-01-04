@@ -1,5 +1,5 @@
 ifdef MODULE
-	M = -s MODULARIZE=1 -s 'EXPORT_NAME="$(MODULE)"' 
+	M = -s MODULARIZE=1 -s 'EXPORT_NAME="raylib"' 
 endif
 
 ifdef ASSETS
@@ -71,6 +71,9 @@ build: $(OBJS) dependencies
 
 static: $(OBJS) dependencies
 	em++ -shared $(LINKS) $(OBJS) -o ../../bin/raylibweb.bc
+
+examples: $(OBJS) dependencies
+	em++ $(M)$(ARGS) -s INITIAL_MEMORY=671088640 -fsanitize=address -s ALLOW_MEMORY_GROWTH=1 $(LINKS) $(OBJS)
 
 dependencies:
 	cd ../../raylib/src && emmake make PLATFORM=PLATFORM_WEB

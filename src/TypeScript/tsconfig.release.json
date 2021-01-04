@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
-      "module": "commonjs",
-      "noImplicitAny": true,
-      "removeComments": false,
+      "module": "CommonJS",
+      "noImplicitAny": false,
+      "removeComments": true,
       "preserveConstEnums": true,
-      "sourceMap": true,
+      "strict": true,
+      "sourceMap": false,
       "declaration": true,
-      "declarationDir": "../../bin/typescript/",
-      "outDir": "../../bin/js/"
+      "declarationDir": "../../bin/",
+      "outDir": "../../bin/",
+      "target": "ES6"
     },
     "include": ["./*"],
     "exclude": ["node_modules", "**/*.spec.ts"]

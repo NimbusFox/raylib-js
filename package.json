@@ -1,0 +1,11 @@
+{
+  "name": "raylib-js",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:NimbusFox/raylib-js.git",
+  "author": "NimbusFox <nimbusfox69@outlook.com>",
+  "license": "Zlib",
+  "dependencies": {
+    "typescript": "^4.1.3"
+  }
+}

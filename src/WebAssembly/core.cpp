@@ -237,7 +237,7 @@ EMSCRIPTEN_BINDINGS(raylibWebCore) {
     emscripten::function("BeginTextureMode", &JSBeginTextureMode);
     emscripten::function("EndTextureMode", &EndTextureMode);
     emscripten::function("BeginScissorMode", &BeginScissorMode);
-    emscripten::function("EndScissorMOde", &EndScissorMode);
+    emscripten::function("EndScissorMode", &EndScissorMode);
 
     // Screen-space-related functions
     emscripten::function("GetMouseRay", JSGetMouseRay);
@@ -318,7 +318,7 @@ EMSCRIPTEN_BINDINGS(raylibWebCore) {
     emscripten::function("GetGamepadAxisMovement", &GetGamepadAxisMovement);
 
     // Input-related functions: mouse
-    emscripten::function("IsMouseButtonPressed", &IsMouseButtonDown);
+    emscripten::function("IsMouseButtonPressed", &IsMouseButtonPressed);
     emscripten::function("IsMouseButtonDown", &IsMouseButtonDown);
     emscripten::function("IsMouseButtonReleased", &IsMouseButtonReleased);
     emscripten::function("IsMouseButtonUp", &IsMouseButtonUp);
