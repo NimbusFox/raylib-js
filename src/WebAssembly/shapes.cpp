@@ -29,7 +29,7 @@ void JSDrawLineBezier(Vector2 startPos, Vector2 endPos, float thick, Color color
     DrawLineBezier(startPos, endPos, thick, color);
 }
 
-void JSDrawLineStrip(std::vector<Vector2> points, int pointsCount, Color color) {
+void JSDrawLineStrip(std::vector<Vector2> points, Color color) {
     DrawLineStrip(points.data(), points.size(), color);
 }
 void JSDrawCircle(int centerX, int centerY, float radius, Color color) {

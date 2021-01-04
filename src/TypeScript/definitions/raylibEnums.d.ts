@@ -1,4 +1,4 @@
-module RaylibEnums {
+declare module Raylib {
     /**
      * System/Window config flags
      * 
@@ -283,5 +283,3 @@ module RaylibEnums {
         NPT_3PATCH_HORIZONTAL   // Npatch defined by 3x1 tiles
     }
 }
-
-export default RaylibEnums;

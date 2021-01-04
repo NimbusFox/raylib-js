@@ -38,6 +38,7 @@ examples/**/*.js
 !examples/**/src.js
 examples/**/*.wasm
 examples/**/*.html
+!examples/**/index.html
 examples/**/*.html.symbols
 examples/**/*.wasm.map
 

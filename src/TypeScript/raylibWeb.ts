@@ -1,8 +1,9 @@
 /// <reference path="./definitions/raylib.d.ts" />
+/// <reference path="./definitions/raylibModules.d.ts" />
+
 
 import Enums from "./raylibEnums.js";
 
-var Module: any;
 module Raylib {
     export let raylibC: IRaylib;
     export const LIGHTGRAY: Color = { r: 200, g: 200, b: 200, a: 255 };
@@ -33,10 +34,6 @@ module Raylib {
     export const MAGENTA: Color = { r: 255, g: 0, b: 255, a: 255 };
     export const RAYWHITE: Color = { r: 245, g: 245, b: 245, a: 255 };
 
-    if (Module === undefined) {
-        Module = {};
-    }
-
     declare let raylib: (arg: any) => Promise<IRaylib>;
 
     export function init() {
@@ -60,6 +57,11 @@ module Raylib {
     export const GestureType = Enums.GestureType;
     export const CameraMode = Enums.CameraMode;
     export const CameraType = Enums.CameraType;
+    export const PixelFormat = Enums.PixelFormat;
+    export const CubemapLayoutType = Enums.CubemapLayoutType;
+    export const TextureFilterMode = Enums.TextureFilterMode;
+    export const TextureWrapMode = Enums.TextureWrapMode;
+    export const NPatchType = Enums.NPatchType;
 }
 
 export default Raylib;
