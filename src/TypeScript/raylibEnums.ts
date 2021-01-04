@@ -282,6 +282,31 @@ module RaylibEnums {
         NPT_3PATCH_VERTICAL,    // Npatch defined by 1x3 tiles
         NPT_3PATCH_HORIZONTAL   // Npatch defined by 3x1 tiles
     }
+
+    export enum MaterialMapType {
+        MAP_DIFFUSE = 0,
+        MAP_ALBEDO = 0,       // MAP_DIFFUSE
+        MAP_SPECULAR = 1,
+        MAP_METALNESS = 1,       // MAP_SPECULAR
+        MAP_NORMAL = 2,
+        MAP_ROUGHNESS = 3,
+        MAP_OCCLUSION,
+        MAP_EMISSION,
+        MAP_HEIGHT,
+        MAP_CUBEMAP,             // NOTE: Uses GL_TEXTURE_CUBE_MAP
+        MAP_IRRADIANCE,          // NOTE: Uses GL_TEXTURE_CUBE_MAP
+        MAP_PREFILTER,           // NOTE: Uses GL_TEXTURE_CUBE_MAP
+        MAP_BRDF
+    }
+
+    export enum BlendMode {
+        BLEND_ALPHA = 0,        // Blend textures considering alpha (default)
+        BLEND_ADDITIVE,         // Blend textures adding colors
+        BLEND_MULTIPLIED,       // Blend textures multiplying colors
+        BLEND_ADD_COLORS,       // Blend textures adding colors (alternative)
+        BLEND_SUBTRACT_COLORS,  // Blend textures subtracting colors (alternative)
+        BLEND_CUSTOM            // Belnd textures using custom src/dst factors (use SetBlendModeCustom())
+    }
 }
 
 export default RaylibEnums;

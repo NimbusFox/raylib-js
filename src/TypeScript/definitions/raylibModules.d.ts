@@ -1,5 +1,5 @@
 /// <reference path="raylibEnums.d.ts" />
-interface IRaylib extends IRaylibCore, IRaylibShapes, IRaylibTextures { }
+interface IRaylib extends IRaylibCore, IRaylibShapes, IRaylibTextures, IRaylibText, IRaylibModels, IRaylibShaders { }
 
 interface IRaylibCore {
     InitWindow(width: number, height: number): void;
@@ -266,4 +266,153 @@ interface IRaylibTextures {
     ColorAlpha(color: Color, alpha: number): Color;
     ColorAlphaBlend(dst: Color, src: Color, tint: Color): Color;
     GetColor(hexValue: number): Color;
+}
+
+interface IRaylibText {
+    GetFontDefault(): Font;
+    LoadFont(fileName: string): Font;
+    LoadFontEx(fileName: string, fontSize: number, fontChars: Array<number>): Font;
+    LoadFontFromImage(image: Image, key: Color, firstChar: number): Font;
+    LoadFontFromMemory(filyType: string, fileData: Array<number>, fontSize: number, fontChars: Array<number>): Font;
+    UnloadFont(font: Font): void;
+
+    DrawFPS(posX: number, posY: number): void;
+    DrawText(text: string, posX: number, posY: number, fontSize: number, color: Color): void;
+    DrawTextEx(font: Font, text: string, position: Vector2, fontSize: number, spacing: number, tint: Color): void;
+    DrawTextRec(font: Font, text: string, rec: Rectangle, fontSize: number, spacing: number, wordWrap: boolean, tint: Color): void;
+    DrawTextRecEx(font: Font, text: string, rec: Rectangle, fontSize: number, spacing: number, wordWrap: boolean, tint: Color, selectStart: number, selectLength: number, selectTint: Color, selectBackTint: Color): void;
+    DrawTextCodepoint(font: Font, codepoint: number, position: Vector2, fontSize: number, tint: Color): void;
+
+    MeasureText(text: string, fontSize: number): number;
+    MeasureTextEx(font: Font, text: string, fontSize: number, spacing: number): Vector2;
+    GetGlyphIndex(font: Font, codepoint: number): number;
+
+    TextToInteger(text: string): number;
+    TextToUtf8(codepoints: Array<number>): string;
+
+    GetCodepoints(text: string): Array<number>;
+    GetCodepointsCount(text: string): number;
+    GetNextCodepoint(text: string): Codepoint;
+    CodepointToUtf8(codepoint: number): string;
+}
+
+interface IRaylibModels {
+    DrawLine3D(startPos: Vector3, endPos: Vector3, color: Color): void;
+    DrawPoint3D(position: Vector3, color: Color): void;
+    DrawCircle3D(center: Vector3, radius: number, rotationAxis: Vector3, rotationAngle: number, color: Color): void;
+    DrawTriangle3D(v1: Vector3, v2: Vector3, v3: Vector3): void;
+    DrawTriangleStrip3D(points: Array<Vector3>, color: Color): void;
+    DrawCube(position: Vector3, width: number, height: number, length: number, color: Color): void;
+    DrawCubeV(position: Vector3, size: Vector3, color: Color): void;
+    DrawCubeWires(position: Vector3, width: number, height: number, length: number, color: Color): void;
+    DrawCubeWiresV(position: Vector3, size: Vector3, color: Color): void;
+    DrawCubeTexture(texture: Texture2D, position: Vector3, width: number, height: number, length: number, color: Color): void;
+    DrawSphere(centerPos: Vector3, radius: number, color: Color): void;
+    DrawSpehereEx(centerPos: Vector3, radius: number, rings: number, slices: number, color: Color): void;
+    DrawSphereWires(centerPos: Vector3, radius: number, rings: number, slices: number, color: Color): void;
+    DrawCylinder(position: Vector3, radiusTop: number, radiusBottom: number, height: number, slices: number, color: Color): void;
+    DrawCylinderWires(position: Vector3, radiusTop: number, radiusBottom: number, height: number, slices: number, color: Color): void;
+    DrawPlane(centerPos: Vector3, size: Vector2, color: Color): void;
+    DrawRay(ray: Ray, color: Color): void;
+    DrawGrid(slices: number, spacing: number): void;
+    DrawGizmo(position: Vector3): void;
+
+    LoadModel(fileName: string): number;
+    LoadModelFromMesh(mesh: number): number;
+    UnloadModel(model: any): void;
+    UnloadModelKeepMeshes(model: any): void;
+
+    LoadMeshes(fileName: string): Array<IntPtr>;
+    UnloadMesh(mesh: any): void;
+
+    LoadMaterials(fileName: string): Array<any>;
+    LoadMaterialDefault(): any;
+    UnloadMaterial(material: any): any;
+    SetMaterialTexture(material: any, mapType: Raylib.MaterialMapType, texture: Texture2D): void;
+    SetModelMeshMaterial(model: any, meshId: number, materialId: number): void;
+
+    LoadModelAnimations(fileName: string): Array<any>;
+    UpdateModelAnimation(model: any, anim: any, frame: number): void;
+    UnloadModelAnimation(anim: any): void;
+    IsModelAnimationValid(mode: any, anim: any): boolean;
+
+    GenMeshPoly(sides: number, radius: number): IntPtr;
+    GenMeshPlane(width: number, length: number, resX: number, resZ: number): IntPtr;
+    GenMeshCube(width: number, height: number, length: number): IntPtr;
+    GenMeshSphere(radius: number, rings: number, slices: number): IntPtr;
+    GenMeshHemiSphere(radius: number, rings: number, slices: number): IntPtr;
+    GenMeshCylinder(radius: number, height: number, slices: number): IntPtr;
+    GenMeshTorus(radius: number, size: number, radSeg: number, sides: number): IntPtr;
+    GenMeshKnot(radius: number, size: number, radSeg: number, sides: number): IntPtr;
+    GenMeshHeightmap(heightMap: Image, size: Vector3): IntPtr;
+    GenMeshCubicmap(cubicmap: Image, cubeSize: Vector3): IntPtr;
+
+    MeshBoundingBox(mesh: any): BoundingBox;
+    MeshTangents(mesh: any): void;
+    MeshBinormals(mesh: any): void;
+    MeshNormalsSmooth(mesh: any): void;
+
+    DrawModel(model: IntPtr, position: Vector3, scale: number, tint: Color): void;
+    DrawModelEx(model: IntPtr, position: Vector3, rotationAxis: Vector3, rotationAngle: number, scale: Vector3, tint: Color): void;
+    DrawModelWires(model: IntPtr, position: Vector3, scale: number, tint: Color): void;
+    DrawModelWiresEx(model: IntPtr, position: Vector3, rotationAxis: Vector3, rotationAngle: number, scale: Vector3, tint: Color): void;
+    DrawBoundingBox(box: BoundingBox, color: Color): void;
+    DrawBillboard(camera: Camera3D, texture: Texture2D, center: Vector3, size: number, tint: Color): void;
+    DrawBullboardRec(camera: Camera3D, texture: Texture2D, source: Rectangle, center: Vector3, size: number, tint: Color): void;
+
+    CheckCollisionSpheres(center1: Vector3, radius1: number, center2: Vector3, radius2: number): boolean;
+    CheckCollisionBoxes(box1: BoundingBox, box2: BoundingBox): boolean;
+    CheckCollisionBoxSphere(box: BoundingBox, center: Vector3, radius: number): boolean;
+    CheckCollisionRaySphere(ray: Ray, center: Vector3, radius: number): boolean;
+    CheckCollisionRaySphereEx(ray: Ray, center: Vector3, radius: number): boolean | Vector3;
+    CheckCollisionRayBox(ray: Ray, box: BoundingBox): boolean;
+    GetCollisionRayMesh(ray: Ray, mesh: any, transform: Matrix): RayHitInfo;
+    GetCollisionRayModel(ray: Ray, model: any): RayHitInfo;
+    GetCollisionRayTriangle(ray: Ray, p1: Vector3, p2: Vector3, p3: Vector3): RayHitInfo;
+    GetCollisionRayGround(ray: Ray, groundHeight: number): RayHitInfo;
+}
+
+interface IRaylibShaders {
+    LoadShader(vsFileName: string, fsFileName: string): Shader;
+    LoadShaderCode(vsCode: string, fsCode: string): Shader;
+    UnloadShader(shader: Shader): void;
+
+    GetShaderDefault(): Shader;
+    GetTextureDefault(): Texture2D;
+    GetShapesTexture(): Texture2D;
+    GetShapesTextureRec(): Rectangle;
+    SetShapesTexture(texture: Texture2D, source: Rectangle): void;
+
+    GetShaderLocation(shader: Shader, uniformName: string): number;
+    GetShaderLocationAttrib(shader: Shader, atrribName: string): number;
+    SetShaderValueFloat(shader: Shader, uniformLoc: number, value: number): void;
+    SetShaderValueInt(shader: Shader, uniformLoc: number, value: number): void;
+    SetShaderValueVec2(shader: Shader, uniformLoc: number, value: Vector2): void;
+    SetShaderValueVec3(shader: Shader, uniformLoc: number, value: Vector3): void;
+    SetShaderValueVec4(shader: Shader, uniformLoc: number, value: Vector4): void;
+    SetShaderValueFloatV(shader: Shader, uniformLoc: number, value: number, count: number): void;
+    SetShaderValueIntV(shader: Shader, uniformLoc: number, value: number, count: number): void;
+    SetShaderValueVec2V(shader: Shader, uniformLoc: number, value: Vector2, count: number): void;
+    SetShaderValueVec3V(shader: Shader, uniformLoc: number, value: Vector3, count: number): void;
+    SetShaderValueVec4V(shader: Shader, uniformLoc: number, value: Vector4, count: number): void;
+    SetShaderValueMatrix(shader: Shader, uniformLoc: number, value: Matrix): void;
+    SetShaderValueTexture(shader: Shader, uniformLoc: number, value: Texture2D): void;
+    SetMatrixProjection(matrix: Matrix): void;
+    SetMatrixModelView(matrix: Matrix): void;
+    GetMatrixModelView(): Matrix;
+    GetMatrixProjection(): Matrix;
+
+    BeginShaderMode(shader: Shader): void;
+    EndShaderMode(): void;
+    BeginBlendMode(mode: Raylib.BlendMode): void;
+    EndBlendMode(): void;
+
+    InitVrSimulator(): void;
+    CloseVrSimulator(): void;
+    UpdateVrTracking(camera: Camera3D): void;
+    SetVrConfiguration(info: any, distortion: Shader): void;
+    IsVrSimulatorReady(): boolean;
+    ToggleVrMode(): void;
+    BeginVrDrawing(): void;
+    EndVrDrawing(): void;
 }

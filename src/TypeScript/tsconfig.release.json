@@ -2,14 +2,14 @@
     "compilerOptions": {
       "module": "ES6",
       "noImplicitAny": false,
-      "removeComments": true,
+      "removeComments": false,
       "preserveConstEnums": true,
       "strict": true,
       "sourceMap": false,
       "declaration": true,
       "declarationDir": "../../bin/",
       "outDir": "../../bin/",
-      "target": "ES6"
+      "target": "ES6",
     },
     "include": ["./*"],
     "exclude": ["node_modules", "**/*.spec.ts"]

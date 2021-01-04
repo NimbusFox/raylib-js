@@ -1,3 +1,5 @@
+type IntPtr = number;
+
 type Color = {
     r: number,
     g: number,
@@ -113,4 +115,26 @@ type NPatchInfo = {
     right: number,
     bottom: number,
     type: Raylib.NPatchType
-}
+};
+
+type Codepoint = {
+    result: number,
+    bytesProcessed: number
+};
+
+type BoundingBox = {
+    min: Vector3,
+    max: Vector3
+};
+
+type RayHitInfo = {
+    hit: boolean,
+    distance: number,
+    position: Vector3,
+    normal: Vector3
+};
+
+type Shader = {
+    id: number,
+    locs: Array<number>
+};

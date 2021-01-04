@@ -141,7 +141,6 @@ EMSCRIPTEN_BINDINGS(raylibWebShaders) {
     emscripten::function("SetShaderValueVec2", &SetShaderValueVec2);
     emscripten::function("SetShaderValueVec3", &SetShaderValueVec3);
     emscripten::function("SetShaderValueVec4", &SetShaderValueVec4);
-    ;
     emscripten::function("SetShaderValueFloatV", &SetShaderValueFloatV);
     emscripten::function("SetShaderValueIntV", &SetShaderValueIntV);
     emscripten::function("SetShaderValueVec2V", &SetShaderValueVec2V);
