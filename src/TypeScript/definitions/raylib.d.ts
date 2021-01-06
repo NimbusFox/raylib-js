@@ -32,13 +32,13 @@ type Camera2D = {
     zoom: number
 };
 
-type Camera3D = {
-    position: Vector3,
-    target: Vector3,
-    up: Vector3,
-    fovy: number,
-    type: number
-};
+// type Camera3D = {
+//     position: Vector3,
+//     target: Vector3,
+//     up: Vector3,
+//     fovy: number,
+//     type: number
+// };
 
 type Image = {
     data: number,

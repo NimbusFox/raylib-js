@@ -16,6 +16,7 @@ function loop() {
 
 Module.onRuntimeInitialized = function () {
     Raylib.InitWindow(800, 450);
+
     loop();
 }
 

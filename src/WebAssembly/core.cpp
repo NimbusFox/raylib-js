@@ -25,8 +25,8 @@ void JSBeginMode2D(Camera2D camera) {
     BeginMode2D(camera);
 }
 
-void JSBeginMode3D(Camera3D camera) {
-    BeginMode3D(camera);
+void JSBeginMode3D(intptr_t camera) {
+    BeginMode3D(*reinterpret_cast<Camera3D *>(camera));
 }
 
 void JSBeginTextureMode(RenderTexture2D target) {
@@ -167,14 +167,12 @@ Vector2 JSGetGesturePinchVector() {
     return GetGesturePinchVector();
 }
 
-void JSSetCameraMode(Camera camera, int mode) {
-    SetCameraMode(camera, mode);
+void JSSetCameraMode(intptr_t camera, int mode) {
+    SetCameraMode(*reinterpret_cast<Camera3D *>(camera), mode);
 }
 
-Camera3D JSUpdateCamera(Camera3D camera) {
-    auto c = camera;
-    UpdateCamera(&c);
-    return c;
+void JSUpdateCamera(intptr_t camera) {
+    UpdateCamera(reinterpret_cast<Camera3D *>(camera));
 } 
 
 EMSCRIPTEN_BINDINGS(raylibWebCore) {

@@ -824,6 +824,7 @@ EMSCRIPTEN_BINDINGS(raylibWebStructs) {
     emscripten::register_vector<float>("vector<float>");
     emscripten::register_vector<unsigned short>("vector<unsigned short>");
     emscripten::register_vector<unsigned int>("vector<unsigned int>");
+    emscripten::register_vector<intptr_t>("vector<intptr_t>");
 
     emscripten::register_vector<Vector2>("vector<Vector2>");
     emscripten::register_vector<Vector3>("vector<Vector3>");

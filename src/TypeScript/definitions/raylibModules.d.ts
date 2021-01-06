@@ -1,5 +1,33 @@
 /// <reference path="raylibEnums.d.ts" />
-interface IRaylib extends IRaylibCore, IRaylibShapes, IRaylibTextures, IRaylibText, IRaylibModels, IRaylibShaders { }
+interface IRaylib extends IRaylibWeb, IRaylibCore, IRaylibShapes, IRaylibTextures, IRaylibText, IRaylibModels, IRaylibShaders { }
+
+interface IRaylibWeb {
+    SetModelTexture(id: number, materialIndex: number, mapsIndex: number, texture: Texture2D): void;
+
+    Dispose(pointer: IntPtr): void;
+
+    CreateVector2(x: number, y: number): IntPtr;
+    Vector2SetX(pointer: IntPtr, x: number): void;
+    Vector2GetX(pointer: IntPtr): number;
+    Vector2SetY(pointer: IntPtr, y: number): void;
+    Vector2GetY(pointer: IntPtr): number;
+
+    CreateVector3(x: number, y: number, z: number): IntPtr;
+    Vector3SetX(pointer: IntPtr, x: number): void;
+    Vector3GetX(pointer: IntPtr): number;
+    Vector3SetY(pointer: IntPtr, y: number): void;
+    Vector3GetY(pointer: IntPtr): number;
+    Vector3SetZ(pointer: IntPtr, z: number): void;
+    Vector3GetZ(pointer: IntPtr): number;
+
+    CreateCamera3D(): IntPtr;
+    GetCamera3DPosition(pointer: IntPtr): IntPtr;
+    GetCamera3DTarget(pointer: IntPtr): IntPtr;
+    GetCamera3DUp(pointer: IntPtr): IntPtr;
+    Camera3DGetFovy(pointer: IntPtr): number;
+    Camera3DSetFovy(pointer: IntPtr, fovy: number): void;
+    Camera3DGetType(pointer: IntPtr): number;
+}
 
 interface IRaylibCore {
     InitWindow(width: number, height: number): void;
@@ -28,18 +56,18 @@ interface IRaylibCore {
     EndDrawing(): void;
     BeginMode2D(): void;
     EndMode2D(): void;
-    BeginMode3D(): void;
+    BeginMode3D(camera: IntPtr): void;
     EndMode3D(): void;
     BeginTextureMode(target: RenderTexture2D): void;
     EndTextureMode(): void;
     BeginScissorMode(x: number, y: number, width: number, height: number): void;
     EndScissorMode(): void;
 
-    GetMouseRay(mousePosition: Vector2, camera: Camera3D): void;
-    GetCameraMatrix(camera: Camera3D): Matrix;
+    GetMouseRay(mousePosition: Vector2, camera: IntPtr): Ray;
+    GetCameraMatrix(camera: IntPtr): Matrix;
     GetCameraMatrix2D(camera: Camera2D): Matrix;
-    GetWorldToScreen(position: Vector3, camera: Camera3D): Vector2;
-    GetWorldToScreenEx(position: Vector3, camera: Camera3D, width: number, height: number): Vector2;
+    GetWorldToScreen(position: Vector3, camera: IntPtr): Vector2;
+    GetWorldToScreenEx(position: Vector3, camera: IntPtr, width: number, height: number): Vector2;
     GetWorldToScreen2D(position: Vector2, camera: Camera2D): Vector2;
     GetScreenToWorld2D(position: Vector2, camera: Camera2D): Vector2;
 
@@ -120,8 +148,8 @@ interface IRaylibCore {
     GetGesturePinchVector(): Vector2;
     GetGesturePinchAngle(): number;
 
-    SetCameraMode(camera: Camera3D, mode: Raylib.CameraMode): void;
-    UpdateCamera(camera: Camera3D): Camera3D;
+    SetCameraMode(camera: IntPtr, mode: Raylib.CameraMode): void;
+    UpdateCamera(camera: IntPtr): void;
     SetCameraPanControl(keyPan: Raylib.Key): void;
     SetCameraAltControl(keyAlt: Raylib.Key): void;
     SetCameraSmoothZoomControl(keySmoothZoom: Raylib.Key): void;
@@ -357,8 +385,8 @@ interface IRaylibModels {
     DrawModelWires(model: IntPtr, position: Vector3, scale: number, tint: Color): void;
     DrawModelWiresEx(model: IntPtr, position: Vector3, rotationAxis: Vector3, rotationAngle: number, scale: Vector3, tint: Color): void;
     DrawBoundingBox(box: BoundingBox, color: Color): void;
-    DrawBillboard(camera: Camera3D, texture: Texture2D, center: Vector3, size: number, tint: Color): void;
-    DrawBullboardRec(camera: Camera3D, texture: Texture2D, source: Rectangle, center: Vector3, size: number, tint: Color): void;
+    DrawBillboard(camera: IntPtr, texture: Texture2D, center: Vector3, size: number, tint: Color): void;
+    DrawBullboardRec(camera: IntPtr, texture: Texture2D, source: Rectangle, center: Vector3, size: number, tint: Color): void;
 
     CheckCollisionSpheres(center1: Vector3, radius1: number, center2: Vector3, radius2: number): boolean;
     CheckCollisionBoxes(box1: BoundingBox, box2: BoundingBox): boolean;
@@ -409,7 +437,7 @@ interface IRaylibShaders {
 
     InitVrSimulator(): void;
     CloseVrSimulator(): void;
-    UpdateVrTracking(camera: Camera3D): void;
+    UpdateVrTracking(camera: IntPtr): void;
     SetVrConfiguration(info: any, distortion: Shader): void;
     IsVrSimulatorReady(): boolean;
     ToggleVrMode(): void;
